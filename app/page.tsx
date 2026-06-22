@@ -1,3 +1,4 @@
+import { BuiltByFooter } from "@/components/BuiltByFooter";
 import { HoochDashboard } from "@/components/HoochDashboard";
 import { HoochIntro } from "@/components/HoochIntro";
 
@@ -27,6 +28,8 @@ export default function Home() {
       <h1>Is the Hooch poopy?</h1>
 
       <HoochDashboard intro={<HoochIntro />} />
+
+      <BuiltByFooter />
 
       <noscript>
         <p className="noscript">
