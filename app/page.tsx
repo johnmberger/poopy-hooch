@@ -1,33 +1,22 @@
 import { BuiltByFooter } from "@/components/BuiltByFooter";
 import { HoochDashboard } from "@/components/HoochDashboard";
 import { HoochIntro } from "@/components/HoochIntro";
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  name: "Is the Hooch poopy?",
-  description:
-    "Is the Chattahoochee River poopy today? Real-time E. coli check for Atlanta tubers.",
-  applicationCategory: "HealthApplication",
-  operatingSystem: "Any",
-  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-  about: {
-    "@type": "BodyOfWater",
-    name: "Chattahoochee River",
-  },
-};
+import { SeoContent } from "@/components/SeoContent";
+import { getStructuredData } from "@/lib/seo";
 
 export default function Home() {
   return (
     <main>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(getStructuredData()) }}
       />
 
       <h1>Is the Hooch poopy?</h1>
 
       <HoochDashboard intro={<HoochIntro />} />
+
+      <SeoContent />
 
       <BuiltByFooter />
 

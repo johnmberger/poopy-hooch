@@ -21,6 +21,8 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+Set `NEXT_PUBLIC_SITE_URL` to your production domain (e.g. `https://isthehoochpoopy.com`) for correct canonical URLs, sitemap, and Open Graph tags.
+
 ## Deploy
 
 Deploy to Vercel or any Node host. The `/api/bacteria` route fetches USGS once per hour and caches the response at the edge — all users share the same cached data.

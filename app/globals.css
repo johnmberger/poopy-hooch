@@ -52,6 +52,60 @@ h1 {
   padding: 0.85rem 1rem;
 }
 
+.seo-content {
+  margin-top: 2rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.seo-content h2 {
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.seo-content h2:first-child {
+  margin-top: 0;
+}
+
+.seo-content p,
+.seo-content ul {
+  margin-bottom: 0.75rem;
+}
+
+.seo-content ul {
+  padding-left: 1.25rem;
+}
+
+.seo-content a {
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.seo-content a:hover {
+  color: var(--text);
+  opacity: 1;
+}
+
+.seo-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.seo-faq-item dt {
+  color: var(--text);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.seo-faq-item dd {
+  margin: 0;
+}
+
 .noscript {
   margin-top: 2rem;
   font-size: 0.85rem;

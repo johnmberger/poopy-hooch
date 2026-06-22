@@ -1,35 +1,55 @@
 import type { Metadata } from "next";
 
 import { BacteriaPrefetch } from "@/components/BacteriaPrefetch";
+import {
+  siteDescription,
+  siteKeywords,
+  siteName,
+  siteTitle,
+  siteUrl,
+} from "@/lib/seo";
 import "./globals.css";
 
-const title = "Is the Hooch poopy?";
-const description =
-  "Real-time Chattahoochee River poop check. Is it safe to tube the Hooch today?";
-
 export const metadata: Metadata = {
-  title,
-  description,
-  keywords: [
-    "Is the Hooch poopy",
-    "Chattahoochee River",
-    "shoot the Hooch",
-    "tubing Atlanta",
-    "E. coli",
-    "river bacteria",
-  ],
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: siteTitle,
+    template: `%s | ${siteName}`,
+  },
+  description: siteDescription,
+  keywords: [...siteKeywords],
+  applicationName: siteName,
+  category: "health",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title,
-    description,
-    type: "website",
+    title: siteTitle,
+    description: siteDescription,
+    url: "/",
+    siteName,
     locale: "en_US",
+    type: "website",
   },
   twitter: {
-    card: "summary",
-    title,
-    description,
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+    },
+  },
+  other: {
+    "geo.region": "US-GA",
+    "geo.placename": "Atlanta",
+  },
 };
 
 export default function RootLayout({
