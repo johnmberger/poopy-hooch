@@ -113,8 +113,8 @@ export function buildSummary(stations: StationReading[]): BacteriaReport["summar
 
   if (safeCount === totalCount) {
     return {
-      headline: "Not poopy",
-      message: "You're good to go.",
+      headline: "Not poopy at all",
+      message: "You're good to go!",
       overallSafe: true,
       safeCount,
       totalCount,
@@ -123,7 +123,7 @@ export function buildSummary(stations: StationReading[]): BacteriaReport["summar
 
   if (safeCount === 0) {
     return {
-      headline: "Poopy",
+      headline: "Poopy all over",
       message: "Stay out of the water today.",
       overallSafe: false,
       safeCount,

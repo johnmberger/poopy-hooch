@@ -18,7 +18,7 @@ function formatObservedAt(iso: string): string {
   }).format(new Date(iso));
 }
 
-function verdictClass(report: BacteriaReport): string {
+function verdictClass(report: BacteriaReport): "safe" | "unsafe" | "mixed" {
   if (report.summary.overallSafe) return "safe";
   if (report.summary.safeCount === 0) return "unsafe";
   return "mixed";
