@@ -43,7 +43,7 @@ h1 {
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.05;
-  margin-bottom: 1.75rem;
+  margin-bottom: 2.25rem;
 }
 
 .seo-intro {
@@ -331,6 +331,37 @@ a:hover {
   background: #000;
 }
 
+.river-map-viewport {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.river-map-boot {
+  position: absolute;
+  inset: 0;
+  z-index: 450;
+  background: #000;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.river-map-viewport.is-ready .river-map-boot {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Leaflet defaults (#ddd tiles) load after globals — override with higher specificity */
+.river-map-frame .leaflet-container {
+  background: #000;
+}
+
+.river-map-frame .leaflet-tile-pane,
+.river-map-frame .leaflet-tile-container,
+.river-map-frame img.leaflet-tile {
+  background: #111;
+}
+
 .river-map-loading {
   height: 100%;
   display: flex;
@@ -555,7 +586,7 @@ a:hover {
 
   h1 {
     font-size: 2.25rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 2rem;
   }
 
   .river-map-frame,

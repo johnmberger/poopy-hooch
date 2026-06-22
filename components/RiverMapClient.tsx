@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MapContainer, TileLayer, GeoJSON, CircleMarker, Tooltip, Popup, useMap } from "react-leaflet";
 import { latLngBounds } from "leaflet";
 import type { Feature, FeatureCollection, LineString } from "geojson";
@@ -106,20 +106,28 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
     | undefined;
   const segments = river.features.filter((f) => f.properties?.kind === "river-segment") as Feature<LineString>[];
 
+  const [tilesReady, setTilesReady] = useState(false);
+
   return (
-    <MapContainer
-      center={[33.93, -84.32]}
-      zoom={11}
-      scrollWheelZoom={false}
-      className="river-map-container"
-      attributionControl={false}
-    >
-      <MapInteraction interactive={interactive} />
-      <FitBounds bounds={bounds} />
-      <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
-        detectRetina={false}
-      />
+    <div className={`river-map-viewport${tilesReady ? " is-ready" : ""}`}>
+      <MapContainer
+        center={[33.93, -84.32]}
+        zoom={11}
+        scrollWheelZoom={false}
+        fadeAnimation={false}
+        zoomAnimation={false}
+        className="river-map-container"
+        attributionControl={false}
+      >
+        <MapInteraction interactive={interactive} />
+        <FitBounds bounds={bounds} />
+        <TileLayer
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
+          detectRetina={false}
+          eventHandlers={{
+            load: () => setTilesReady(true),
+          }}
+        />
 
       {outline && (
         <GeoJSON
@@ -188,6 +196,8 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
           </Popup>
         </CircleMarker>
       ))}
-    </MapContainer>
+      </MapContainer>
+      <div className="river-map-boot" aria-hidden="true" />
+    </div>
   );
 }

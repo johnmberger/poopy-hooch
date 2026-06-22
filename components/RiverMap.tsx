@@ -12,7 +12,7 @@ const river = riverData as FeatureCollection;
 
 const RiverMapClient = dynamic(() => import("./RiverMapClient"), {
   ssr: false,
-  loading: () => <div className="river-map-loading">loading map…</div>,
+  loading: () => <div className="river-map-loading" />,
 });
 
 interface RiverMapProps {
