@@ -7,7 +7,6 @@ import { RiverMap } from "@/components/RiverMap";
 import { getBacteriaReport } from "@/lib/bacteria-cache";
 import { E_COLI_THRESHOLD, type BacteriaReport } from "@/lib/usgs";
 import { HoochSkeleton } from "./HoochSkeleton";
-import type { ReactNode } from "react";
 
 function formatObservedAt(iso: string): string {
   return new Intl.DateTimeFormat("en-US", {
@@ -25,7 +24,7 @@ function verdictClass(report: BacteriaReport): string {
   return "mixed";
 }
 
-export function HoochDashboard({ intro }: { intro: ReactNode }) {
+export function HoochDashboard() {
   const [report, setReport] = useState<BacteriaReport | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,7 +61,7 @@ export function HoochDashboard({ intro }: { intro: ReactNode }) {
   }
 
   if (!report) {
-    return <HoochSkeleton intro={intro} />;
+    return <HoochSkeleton />;
   }
 
   return (
@@ -75,8 +74,6 @@ export function HoochDashboard({ intro }: { intro: ReactNode }) {
       <ErrorBoundary fallback={<p className="meta">Map failed to load. The spots below still have readings.</p>}>
         <RiverMap stations={report.stations} />
       </ErrorBoundary>
-
-      {intro}
 
       <p className="stations-heading">The spots</p>
       <ul className="station-list">

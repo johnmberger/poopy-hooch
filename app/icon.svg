@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Poop">
+  <rect width="32" height="32" fill="#000"/>
+  <ellipse cx="16" cy="23.5" rx="10" ry="5" fill="#6F4E37"/>
+  <ellipse cx="16" cy="17.5" rx="8" ry="4.5" fill="#7D5638"/>
+  <ellipse cx="16" cy="12.5" rx="6" ry="3.75" fill="#8B5E3C"/>
+  <ellipse cx="16" cy="8.5" rx="4" ry="3" fill="#9A6844"/>
+</svg>

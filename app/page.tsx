@@ -1,7 +1,6 @@
 import { BuiltByFooter } from "@/components/BuiltByFooter";
 import { HoochDashboard } from "@/components/HoochDashboard";
-import { HoochIntro } from "@/components/HoochIntro";
-import { SeoContent } from "@/components/SeoContent";
+import { LearnMore } from "@/components/LearnMore";
 import { getStructuredData } from "@/lib/seo";
 
 export default function Home() {
@@ -14,9 +13,9 @@ export default function Home() {
 
       <h1>Is the Hooch poopy?</h1>
 
-      <HoochDashboard intro={<HoochIntro />} />
+      <HoochDashboard />
 
-      <SeoContent />
+      <LearnMore />
 
       <BuiltByFooter />
 

@@ -1,8 +1,6 @@
-import type { ReactNode } from "react";
-
 import { STATIONS } from "@/lib/usgs";
 
-export function HoochSkeleton({ intro }: { intro: ReactNode }) {
+export function HoochSkeleton() {
   return (
     <div className="hooch-skeleton" aria-busy="true" aria-label="checking poop levels">
       <div className="skeleton-verdict">
@@ -12,8 +10,6 @@ export function HoochSkeleton({ intro }: { intro: ReactNode }) {
 
       <p className="stations-heading">The river</p>
       <div className="skeleton-map" />
-
-      {intro}
 
       <p className="stations-heading">The spots</p>
       <ul className="station-list">

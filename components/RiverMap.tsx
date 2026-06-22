@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import type { FeatureCollection } from "geojson";
 
 import type { StationReading } from "@/lib/usgs";
@@ -18,11 +19,42 @@ interface RiverMapProps {
 }
 
 export function RiverMap({ stations }: RiverMapProps) {
+  const [mapInteractive, setMapInteractive] = useState(true);
+  const [needsTouchGuard, setNeedsTouchGuard] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(pointer: coarse)");
+
+    const sync = (matches: boolean) => {
+      setNeedsTouchGuard(matches);
+      setMapInteractive(!matches);
+    };
+
+    sync(media.matches);
+    media.addEventListener("change", (event) => sync(event.matches));
+    return () => media.removeEventListener("change", (event) => sync(event.matches));
+  }, []);
+
   return (
     <figure className="river-map">
       <figcaption className="stations-heading">The river</figcaption>
-      <div className="river-map-frame">
-        <RiverMapClient river={river} stations={stations} />
+      <div
+        className={`river-map-frame${mapInteractive ? " is-interactive" : ""}`}
+      >
+        <RiverMapClient
+          river={river}
+          stations={stations}
+          interactive={mapInteractive}
+        />
+        {needsTouchGuard && !mapInteractive && (
+          <button
+            type="button"
+            className="map-explore-btn"
+            onClick={() => setMapInteractive(true)}
+          >
+            Tap to explore map
+          </button>
+        )}
       </div>
       <div className="map-legend">
         <span className="map-legend-item">

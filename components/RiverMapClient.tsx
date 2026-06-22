@@ -17,6 +17,29 @@ const PUT_IN = "#93c5fd";
 interface RiverMapClientProps {
   river: FeatureCollection;
   stations: StationReading[];
+  interactive: boolean;
+}
+
+function MapInteraction({ interactive }: { interactive: boolean }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (interactive) {
+      map.dragging.enable();
+      map.touchZoom.enable();
+      map.doubleClickZoom.enable();
+      map.boxZoom.enable();
+      map.keyboard.enable();
+    } else {
+      map.dragging.disable();
+      map.touchZoom.disable();
+      map.doubleClickZoom.disable();
+      map.boxZoom.disable();
+      map.keyboard.disable();
+    }
+  }, [map, interactive]);
+
+  return null;
 }
 
 function segmentRisk(a: RiskLevel, b: RiskLevel): RiskLevel {
@@ -33,13 +56,21 @@ function FitBounds({ bounds }: { bounds: LatLngBounds }) {
   const map = useMap();
 
   useEffect(() => {
-    map.fitBounds(bounds, { padding: [28, 28] });
+    const fit = () => {
+      const padding: [number, number] =
+        window.innerWidth < 480 ? [56, 20] : [28, 28];
+      map.fitBounds(bounds, { padding });
+    };
+
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
   }, [map, bounds]);
 
   return null;
 }
 
-export default function RiverMapClient({ river, stations }: RiverMapClientProps) {
+export default function RiverMapClient({ river, stations, interactive }: RiverMapClientProps) {
   const segmentRisks = useMemo(
     () => [segmentRisk(stations[0].risk, stations[1].risk), segmentRisk(stations[1].risk, stations[2].risk)],
     [stations],
@@ -83,6 +114,7 @@ export default function RiverMapClient({ river, stations }: RiverMapClientProps)
       className="river-map-container"
       attributionControl={false}
     >
+      <MapInteraction interactive={interactive} />
       <FitBounds bounds={bounds} />
       <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
 

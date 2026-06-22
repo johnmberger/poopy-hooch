@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 import { BacteriaPrefetch } from "@/components/BacteriaPrefetch";
 import {
@@ -50,6 +50,13 @@ export const metadata: Metadata = {
     "geo.region": "US-GA",
     "geo.placename": "Atlanta",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#000000",
 };
 
 export default function RootLayout({

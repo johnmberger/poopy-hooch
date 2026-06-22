@@ -14,7 +14,6 @@ export function generateOgImage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          border: "6px solid #fff",
         }}
       >
         <div
