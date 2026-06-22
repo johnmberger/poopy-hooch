@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 
 import { BacteriaPrefetch } from "@/components/BacteriaPrefetch";
 import {
@@ -74,6 +75,7 @@ export default function RootLayout({
       <body>
         <BacteriaPrefetch />
         {children}
+        <Analytics />
       </body>
     </html>
   );
