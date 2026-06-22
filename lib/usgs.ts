@@ -148,6 +148,7 @@ export const USGS_IV_URL =
 export async function fetchBacteriaReport(): Promise<BacteriaReport> {
   const res = await fetch(USGS_IV_URL, {
     headers: { Accept: "application/json" },
+    next: { revalidate: 3600 },
   });
 
   if (!res.ok) {

@@ -23,11 +23,11 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Deploy
 
-Deploy to any static host (Vercel, Netlify, GitHub Pages). The page is fully static — bacteria data is fetched directly from USGS in the browser on each visit.
+Deploy to Vercel or any Node host. The `/api/bacteria` route fetches USGS once per hour and caches the response at the edge — all users share the same cached data.
 
 ## Data source
 
-- [USGS NWIS instantaneous values API](https://waterservices.usgs.gov/) — fetched client-side (parameter codes 99407 and 63680)
+- [USGS NWIS instantaneous values API](https://waterservices.usgs.gov/) — fetched server-side via `/api/bacteria` (cached 1 hour)
 - Same data shown on [ga.water.usgs.gov/bacteria](https://ga.water.usgs.gov/bacteria/)
 - River geometry from [OpenStreetMap](https://www.openstreetmap.org/) (stored in `data/chattahoochee-river.json`)
 
