@@ -1,0 +1,369 @@
+:root {
+  --bg: #000;
+  --text: #fff;
+  --text-muted: #999;
+  --border: #fff;
+  --clean: #4ade80;
+  --clean-bg: rgba(74, 222, 128, 0.1);
+  --poopy: #f87171;
+  --poopy-bg: rgba(248, 113, 113, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 18px;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+h1 {
+  font-size: 3.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 1.75rem;
+}
+
+.seo-intro {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  margin-top: 0.5rem;
+  border: 1px solid var(--border);
+  padding: 0.85rem 1rem;
+}
+
+.noscript {
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 1rem;
+}
+
+a {
+  color: var(--text);
+}
+
+a:hover {
+  text-decoration: none;
+  opacity: 0.7;
+}
+
+/* Skeleton */
+.hooch-skeleton {
+  margin-bottom: 2rem;
+}
+
+.skeleton-verdict {
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.skeleton-map {
+  height: 340px;
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton-station {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skeleton-line {
+  height: 0.85rem;
+  background: #222;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton-line-lg {
+  width: 55%;
+  height: 1.25rem;
+}
+
+.skeleton-line-full {
+  width: 100%;
+}
+
+.skeleton-line-md {
+  width: 72%;
+}
+
+.skeleton-line-sm {
+  width: 40%;
+  height: 1rem;
+}
+
+.skeleton-line-xs {
+  width: 28%;
+  height: 0.75rem;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Verdict */
+.verdict {
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid var(--border);
+}
+
+.verdict.safe {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.verdict.unsafe {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.verdict.mixed {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.verdict h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.verdict p {
+  font-size: 0.95rem;
+}
+
+.stations-heading {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 0.65rem;
+}
+
+.river-map {
+  margin-bottom: 1.5rem;
+}
+
+.river-map-frame {
+  height: 340px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: #000;
+}
+
+.river-map-container {
+  height: 100%;
+  width: 100%;
+  background: #000;
+}
+
+.river-map-loading {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.leaflet-tooltip.map-label {
+  background: #000;
+  color: #fff;
+  border: 1px solid #fff;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.leaflet-tooltip-left.map-label::before {
+  border-left-color: #fff;
+}
+
+.leaflet-tooltip-right.map-label::before {
+  border-right-color: #fff;
+}
+
+.leaflet-popup.map-popup .leaflet-popup-content-wrapper {
+  background: #000;
+  color: #fff;
+  border: 1px solid #fff;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.leaflet-popup.map-popup .leaflet-popup-content {
+  margin: 8px 10px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.leaflet-popup.map-popup .leaflet-popup-tip {
+  background: #000;
+  box-shadow: none;
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.25rem;
+  margin-top: 0.65rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.map-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.map-legend-swatch {
+  width: 1rem;
+  height: 0;
+  border-top: 3px solid #fff;
+}
+
+.map-legend-swatch.low {
+  border-top-color: var(--clean);
+}
+
+.map-legend-swatch.high {
+  border-top-color: var(--poopy);
+  border-top-style: solid;
+  opacity: 1;
+}
+
+.map-legend-swatch.putin {
+  width: 0.55rem;
+  height: 0.55rem;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  border-top: 1px solid #fff;
+  background: #93c5fd;
+}
+
+.station-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.station {
+  border: 1px solid var(--border);
+  padding: 0.85rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.station-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.station-reading {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.station-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.station-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.station-badge.low {
+  background: var(--clean-bg);
+  color: var(--clean);
+  border-color: rgba(74, 222, 128, 0.4);
+}
+
+.station-badge.high {
+  background: var(--poopy-bg);
+  color: var(--poopy);
+  border-color: rgba(248, 113, 113, 0.4);
+}
+
+.meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  line-height: 1.55;
+}
+
+.error-box {
+  border: 2px solid var(--border);
+  padding: 1.25rem;
+  background: var(--text);
+  color: var(--bg);
+}
+
+.error-box a {
+  color: var(--bg);
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+}
