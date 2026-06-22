@@ -1,4 +1,4 @@
-# Shoot the Hooch?
+# Is the 'Hooch Poopy?
 
 A simple site that answers the most important question on a hot Atlanta day: **is it safe to float the Chattahoochee?**
 
@@ -25,7 +25,7 @@ Set `NEXT_PUBLIC_SITE_URL` to your production domain (e.g. `https://isthehoochpo
 
 ## Deploy
 
-Deploy to Vercel or any Node host. The `/api/bacteria` route fetches USGS once per hour and caches the response at the edge — all users share the same cached data.
+Deploy to Vercel or any Node host. The `/api/bacteria` route fetches USGS once per hour and caches the response at the edge; all users share the same cached data.
 
 ## Data source
 

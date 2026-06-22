@@ -8,17 +8,21 @@ export function HoochSkeleton() {
         <div className="skeleton-line skeleton-line-full" />
       </div>
 
-      <p className="stations-heading">The river</p>
+      <p className="stations-heading">River map</p>
       <div className="skeleton-map" />
 
-      <p className="stations-heading">The spots</p>
+      <p className="stations-heading">Monitoring stations</p>
       <ul className="station-list">
         {STATIONS.map((station) => (
           <li key={station.id} className="station skeleton-station">
             <span className="skeleton-line skeleton-line-sm" />
             <span className="skeleton-line skeleton-line-xs" />
+            <span className="skeleton-line skeleton-line-xs" />
           </li>
         ))}
+        <li className="station-list-more learn-more-skeleton">
+          <span className="skeleton-line skeleton-line-sm" />
+        </li>
       </ul>
     </div>
   );

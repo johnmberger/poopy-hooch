@@ -1,4 +1,12 @@
 /** Popular CRNRA tubing put-ins along the monitored stretch. */
+import { STATIONS } from "@/lib/usgs";
+
+function stationCoords(stationId: string) {
+  const station = STATIONS.find((s) => s.id === stationId);
+  if (!station) throw new Error(`Unknown station: ${stationId}`);
+  return { lat: station.lat, lng: station.lng };
+}
+
 export const PUT_INS = [
   {
     id: "jones-bridge",
@@ -17,8 +25,7 @@ export const PUT_INS = [
   {
     id: "powers-island",
     name: "Powers Island",
-    lat: 33.903483,
-    lng: -84.443612,
+    ...stationCoords("02335880"),
     labelDirection: "left" as const,
   },
   {

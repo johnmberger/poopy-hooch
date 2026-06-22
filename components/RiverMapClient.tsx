@@ -14,6 +14,9 @@ const CLEAN = "#4ade80";
 const POOPY = "#f87171";
 const PUT_IN = "#93c5fd";
 
+const TILE_BASE = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png";
+const TILE_LABELS = "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}.png";
+
 interface RiverMapClientProps {
   river: FeatureCollection;
   stations: StationReading[];
@@ -122,12 +125,14 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
         <MapInteraction interactive={interactive} />
         <FitBounds bounds={bounds} />
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
-          detectRetina={false}
+          url={TILE_BASE}
+          detectRetina
+          className="river-map-base-tiles"
           eventHandlers={{
             load: () => setTilesReady(true),
           }}
         />
+        <TileLayer url={TILE_LABELS} detectRetina className="river-map-label-tiles" />
 
       {outline && (
         <GeoJSON
@@ -148,28 +153,6 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
             lineJoin: "round",
           }}
         />
-      ))}
-
-      {PUT_INS.map((putIn) => (
-        <CircleMarker
-          key={putIn.id}
-          center={[putIn.lat, putIn.lng]}
-          radius={5}
-          pathOptions={{
-            color: "#fff",
-            weight: 1.5,
-            fillColor: PUT_IN,
-            fillOpacity: 0.95,
-          }}
-        >
-          <Tooltip
-            permanent
-            {...labelTooltipProps(putIn.labelDirection)}
-            className="map-label map-label-putin"
-          >
-            {putIn.name}
-          </Tooltip>
-        </CircleMarker>
       ))}
 
       {stations.map((station) => (
@@ -194,6 +177,28 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
           <Popup className="map-popup">
             {station.risk === "low" ? "clean" : "poopy"} · {Math.round(station.eColi)}
           </Popup>
+        </CircleMarker>
+      ))}
+
+      {PUT_INS.map((putIn) => (
+        <CircleMarker
+          key={putIn.id}
+          center={[putIn.lat, putIn.lng]}
+          radius={5}
+          pathOptions={{
+            color: "#fff",
+            weight: 1.5,
+            fillColor: PUT_IN,
+            fillOpacity: 0.95,
+          }}
+        >
+          <Tooltip
+            permanent
+            {...labelTooltipProps(putIn.labelDirection)}
+            className="map-label map-label-putin"
+          >
+            {putIn.name}
+          </Tooltip>
         </CircleMarker>
       ))}
       </MapContainer>

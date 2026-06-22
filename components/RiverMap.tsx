@@ -38,7 +38,8 @@ export function RiverMap({ stations }: RiverMapProps) {
 
   return (
     <figure className="river-map">
-      <figcaption className="stations-heading">The river</figcaption>
+      <figcaption className="stations-heading">River map</figcaption>
+      <p className="section-note">Stations, river sections, and put-ins.</p>
       <div
         className={`river-map-frame${mapInteractive ? " is-interactive" : ""}`}
       >
@@ -55,6 +56,7 @@ export function RiverMap({ stations }: RiverMapProps) {
             onClick={() => setMapInteractive(true)}
           >
             Tap to explore map
+            <span className="map-explore-hint">So scrolling doesn&apos;t move the map</span>
           </button>
         )}
       </div>

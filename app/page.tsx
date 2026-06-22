@@ -1,6 +1,5 @@
 import { BuiltByFooter } from "@/components/BuiltByFooter";
 import { HoochDashboard } from "@/components/HoochDashboard";
-import { LearnMore } from "@/components/LearnMore";
 import { getServerBacteriaReport } from "@/lib/bacteria-server";
 import { getStructuredData } from "@/lib/seo";
 
@@ -19,8 +18,6 @@ export default async function Home() {
       <h1>Is the Hooch poopy?</h1>
 
       <HoochDashboard initialReport={initialReport} />
-
-      <LearnMore />
 
       <BuiltByFooter />
 

@@ -4,7 +4,10 @@ import { SeoContent } from "@/components/SeoContent";
 export function LearnMore() {
   return (
     <details className="learn-more">
-      <summary className="learn-more-toggle">Learn more</summary>
+      <summary className="learn-more-toggle">
+        <span className="station-name">Learn more</span>
+        <span className="learn-more-icon" aria-hidden="true" />
+      </summary>
       <div className="learn-more-panel">
         <HoochIntro />
         <SeoContent />
