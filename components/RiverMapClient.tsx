@@ -116,7 +116,10 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
     >
       <MapInteraction interactive={interactive} />
       <FitBounds bounds={bounds} />
-      <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+      <TileLayer
+        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
+        detectRetina={false}
+      />
 
       {outline && (
         <GeoJSON

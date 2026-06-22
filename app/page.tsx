@@ -1,9 +1,14 @@
 import { BuiltByFooter } from "@/components/BuiltByFooter";
 import { HoochDashboard } from "@/components/HoochDashboard";
 import { LearnMore } from "@/components/LearnMore";
+import { getServerBacteriaReport } from "@/lib/bacteria-server";
 import { getStructuredData } from "@/lib/seo";
 
-export default function Home() {
+export const revalidate = 3600;
+
+export default async function Home() {
+  const initialReport = await getServerBacteriaReport();
+
   return (
     <main>
       <script
@@ -13,7 +18,7 @@ export default function Home() {
 
       <h1>Is the Hooch poopy?</h1>
 
-      <HoochDashboard />
+      <HoochDashboard initialReport={initialReport} />
 
       <LearnMore />
 
@@ -21,8 +26,8 @@ export default function Home() {
 
       <noscript>
         <p className="noscript">
-          Need JS for live poop levels. Or just check{" "}
-          <a href="https://ga.water.usgs.gov/bacteria/">USGS BacteriALERT</a>.
+          The map needs JavaScript. Check{" "}
+          <a href="https://ga.water.usgs.gov/bacteria/">USGS BacteriALERT</a> for live data.
         </p>
       </noscript>
     </main>

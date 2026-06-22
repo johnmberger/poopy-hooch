@@ -24,11 +24,13 @@ function verdictClass(report: BacteriaReport): string {
   return "mixed";
 }
 
-export function HoochDashboard() {
-  const [report, setReport] = useState<BacteriaReport | null>(null);
+export function HoochDashboard({ initialReport }: { initialReport: BacteriaReport | null }) {
+  const [report, setReport] = useState<BacteriaReport | null>(initialReport);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (initialReport) return;
+
     let cancelled = false;
 
     getBacteriaReport()
@@ -44,7 +46,7 @@ export function HoochDashboard() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [initialReport]);
 
   if (error) {
     return (

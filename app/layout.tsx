@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 
-import { BacteriaPrefetch } from "@/components/BacteriaPrefetch";
 import {
   siteDescription,
   siteKeywords,
@@ -67,13 +66,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://waterservices.usgs.gov" />
-        <link rel="dns-prefetch" href="https://waterservices.usgs.gov" />
-        <link rel="preconnect" href="https://basemaps.cartocdn.com" />
-      </head>
       <body>
-        <BacteriaPrefetch />
         {children}
         <Analytics />
       </body>
