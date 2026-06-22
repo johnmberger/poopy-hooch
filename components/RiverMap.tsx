@@ -56,7 +56,6 @@ export function RiverMap({ stations }: RiverMapProps) {
             onClick={() => setMapInteractive(true)}
           >
             Tap to explore map
-            <span className="map-explore-hint">So scrolling doesn&apos;t move the map</span>
           </button>
         )}
       </div>
