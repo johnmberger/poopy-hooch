@@ -15,16 +15,19 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(getStructuredData()) }}
       />
 
-      <h1>Is the Hooch poopy?</h1>
+      <article>
+        <h1>Is the Hooch poopy?</h1>
 
-      <HoochDashboard initialReport={initialReport} />
+        <HoochDashboard initialReport={initialReport} />
+      </article>
 
       <BuiltByFooter />
 
       <noscript>
         <p className="noscript">
-          The map needs JavaScript. Check{" "}
-          <a href="https://ga.water.usgs.gov/bacteria/">USGS BacteriALERT</a> for live data.
+          Is it safe to shoot the Hooch today? This page needs JavaScript for the live map and
+          bacteria check. See official readings at{" "}
+          <a href="https://ga.water.usgs.gov/bacteria/">USGS BacteriALERT</a>.
         </p>
       </noscript>
     </main>

@@ -1,6 +1,6 @@
 # Is the 'Hooch Poopy?
 
-A simple site that answers the most important question on a hot Atlanta day: **is it safe to float the Chattahoochee?**
+A simple site that answers the most important question on a hot Atlanta day: **is it safe to float the Chattahoochee River?**
 
 It pulls estimated E. coli levels from the [USGS BacteriALERT program](https://ga.water.usgs.gov/bacteria/) at three monitoring sites in the Chattahoochee River National Recreation Area:
 

@@ -5,20 +5,28 @@ export const siteUrl =
 
 export const siteName = "Is the Hooch poopy?";
 
-export const siteTitle = "Is the Hooch poopy? | Chattahoochee River Bacteria Check";
+export const siteTitle = "Is the Hooch poopy? | Chattahoochee River Tubing & Safety Check";
 
 export const siteDescription =
-  "Is the Chattahoochee River poopy today? Check real-time E. coli bacteria levels before you shoot the Hooch. Live readings from USGS BacteriALERT at Medlock Bridge, Powers Ferry, and Paces Ferry in Atlanta.";
+  "Is it safe to shoot the Hooch today? Check Chattahoochee River E. coli bacteria levels before tubing or floating in Atlanta. Live USGS BacteriALERT readings at Medlock Bridge, Powers Ferry, and Paces Ferry.";
 
 export const siteKeywords = [
   "is the hooch poopy",
   "is the hooch safe",
+  "is it safe to shoot the hooch",
   "shoot the hooch",
+  "shoot the hooch safe",
   "chattahoochee river bacteria",
   "chattahoochee river e coli",
-  "chattahoochee tubing",
+  "chattahoochee river water quality",
+  "chattahoochee river safe to swim",
+  "chattahoochee river safe today",
+  "chattahoochee river conditions",
+  "chattahoochee river weather",
+  "chattahoochee river tubing",
   "chattahoochee river tubing safety",
-  "is it safe to tube the chattahoochee",
+  "is it safe to tube the chattahoochee river",
+  "can you tube the chattahoochee river today",
   "float the hooch",
   "hooch water quality",
   "atlanta river tubing",
@@ -27,17 +35,32 @@ export const siteKeywords = [
   "USGS BacteriALERT",
   "medlock bridge bacteria",
   "powers ferry e coli",
-  "paces ferry chattahoochee",
+  "paces ferry chattahoochee river",
   "jones bridge tubing",
-  "chattahoochee poop check",
+  "chattahoochee river poop check",
   "river bacteria atlanta",
 ];
 
 export const faqItems = [
   {
+    question: "Is it safe to shoot the Hooch?",
+    answer:
+      "It depends on current E. coli levels along the stretch you're floating. This site checks three USGS BacteriALERT monitoring stations in the Chattahoochee River National Recreation Area and shows which sections look clean or poopy right now.",
+  },
+  {
     question: "Is it safe to shoot the Hooch today?",
     answer:
-      "It depends on current E. coli levels. This site checks three USGS BacteriALERT monitoring stations along the Chattahoochee River National Recreation Area and tells you which sections look clean or poopy right now.",
+      "Check the live verdict at the top of this page. We pull hourly E. coli estimates from USGS sensors at Medlock Bridge, Powers Ferry, and Paces Ferry — the main tubing corridor through Atlanta's CRNRA.",
+  },
+  {
+    question: "Is the Chattahoochee River safe for tubing or swimming today?",
+    answer:
+      "Bacteria levels change, especially after rain. We compare live USGS E. coli estimates against the EPA beach action value (235 cfu/100 mL) at three stations so you can see if the river looks clean, mixed, or poopy before you get in.",
+  },
+  {
+    question: "Should I check Chattahoochee River weather or bacteria levels?",
+    answer:
+      "Both matter, but they measure different things. A sunny forecast doesn't guarantee clean water — rain upstream can spike E. coli for days. Use this site for bacteria levels and a weather app for storms, lightning, and air temperature before you shoot the Hooch.",
   },
   {
     question: "What E. coli level is safe for tubing?",
@@ -49,7 +72,7 @@ export const faqItems = [
       "Readings come from the USGS BacteriALERT program, which estimates E. coli at Medlock Bridge, Powers Ferry, and Paces Ferry using turbidity and other sensor data. Lab samples are collected weekly, usually on Thursdays.",
   },
   {
-    question: "What parts of the Chattahoochee does this cover?",
+    question: "What parts of the Chattahoochee River does this cover?",
     answer:
       "The three monitoring sites span the main tubing stretch of the CRNRA — upstream near Norcross (Medlock Bridge), mid-river at Sandy Springs and I-285 (Powers Ferry), and downstream near Atlanta and Vinings (Paces Ferry).",
   },
@@ -71,6 +94,23 @@ export function getStructuredData() {
         name: siteName,
         description: siteDescription,
         inLanguage: "en-US",
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${siteUrl}/#webpage`,
+        url: siteUrl,
+        name: siteTitle,
+        description: siteDescription,
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        about: [
+          "Chattahoochee River tubing safety",
+          "Chattahoochee River E. coli bacteria levels",
+          "Shoot the Hooch water quality",
+        ],
+        speakable: {
+          "@type": "SpeakableSpecification",
+          cssSelector: ["h1", ".verdict h2", ".verdict p"],
+        },
       },
       {
         "@type": "WebApplication",

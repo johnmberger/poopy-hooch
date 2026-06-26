@@ -3,14 +3,21 @@ import { faqItems } from "@/lib/seo";
 
 export function SeoContent() {
   return (
-    <section className="seo-content" aria-label="About the Chattahoochee bacteria check">
-      <h2>Is it safe to tube the Chattahoochee River?</h2>
+    <section className="seo-content" aria-label="About the Chattahoochee River bacteria check">
+      <h2>Is it safe to shoot the Hooch?</h2>
       <p>
         &quot;Shoot the Hooch&quot; means floating or tubing down the Chattahoochee River through
         Atlanta. Before you grab a tube, it helps to know if the water&apos;s gross. This site
         pulls live E. coli estimates from the{" "}
         <a href="https://ga.water.usgs.gov/bacteria/">USGS BacteriALERT</a> program at three
         stations in the Chattahoochee River National Recreation Area (CRNRA).
+      </p>
+
+      <h2>Chattahoochee River weather vs. water quality</h2>
+      <p>
+        People often search river weather before a float — but sunny skies don&apos;t always mean
+        clean water. Rain upstream can spike bacteria for days. Check E. coli levels here before
+        you shoot the Hooch; use a weather app for storms, lightning, and air temperature.
       </p>
 
       <h2>Where we check</h2>

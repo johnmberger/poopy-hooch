@@ -73,7 +73,7 @@ export function HoochDashboard({ initialReport }: { initialReport: BacteriaRepor
         <h2>{report.summary.headline}</h2>
         <p>{report.summary.message}</p>
         <p className="verdict-context">
-          Based on estimated E. coli at {report.stations.length} USGS stations on the Chattahoochee.
+          Based on estimated E. coli at {report.stations.length} USGS stations on the Chattahoochee River.
         </p>
         <p className="verdict-updated">Updated {formatObservedAt(report.updatedAt)}</p>
       </section>
