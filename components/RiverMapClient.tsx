@@ -8,6 +8,7 @@ import type { TooltipOptions, LatLngBounds } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 import { PUT_INS } from "@/lib/put-ins";
+import { MapLoadingSkeleton } from "@/components/MapLoadingSkeleton";
 import type { RiskLevel, StationReading } from "@/lib/usgs";
 
 const CLEAN = "#4ade80";
@@ -59,15 +60,29 @@ function FitBounds({ bounds }: { bounds: LatLngBounds }) {
   const map = useMap();
 
   useEffect(() => {
+    let resizeTimer: ReturnType<typeof setTimeout>;
+
+    const padding = (): [number, number] =>
+      window.matchMedia("(max-width: 480px)").matches ? [56, 20] : [28, 28];
+
     const fit = () => {
-      const padding: [number, number] =
-        window.innerWidth < 480 ? [56, 20] : [28, 28];
-      map.fitBounds(bounds, { padding });
+      map.fitBounds(bounds, { padding: padding(), animate: false });
     };
 
-    fit();
-    window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
+    const onResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(fit, 150);
+    };
+
+    map.whenReady(() => {
+      requestAnimationFrame(fit);
+    });
+
+    window.addEventListener("resize", onResize);
+    return () => {
+      clearTimeout(resizeTimer);
+      window.removeEventListener("resize", onResize);
+    };
   }, [map, bounds]);
 
   return null;
@@ -126,13 +141,12 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
         <FitBounds bounds={bounds} />
         <TileLayer
           url={TILE_BASE}
-          detectRetina
           className="river-map-base-tiles"
           eventHandlers={{
             load: () => setTilesReady(true),
           }}
         />
-        <TileLayer url={TILE_LABELS} detectRetina className="river-map-label-tiles" />
+        <TileLayer url={TILE_LABELS} className="river-map-label-tiles" />
 
       {outline && (
         <GeoJSON
@@ -202,7 +216,7 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
         </CircleMarker>
       ))}
       </MapContainer>
-      <div className="river-map-boot" aria-hidden="true" />
+      {!tilesReady && <MapLoadingSkeleton overlay />}
     </div>
   );
 }

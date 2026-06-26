@@ -219,10 +219,55 @@ a:hover {
 
 .skeleton-map {
   height: 340px;
+  margin-bottom: 1.5rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  margin-bottom: 1.5rem;
+}
+
+.map-loading-skeleton {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  border-radius: inherit;
   animation: pulse 1.4s ease-in-out infinite;
+  overflow: hidden;
+  position: relative;
+}
+
+.map-loading-skeleton::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='100' viewBox='0 0 200 100'%3E%3Cpath d='M0 50 C50 35 150 65 200 50' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3Cpath d='M0 70 C50 55 150 85 200 70' fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.6'/%3E%3C/svg%3E");
+  background-size: 200px 100px;
+  background-repeat: repeat;
+}
+
+.map-loading-skeleton-label {
+  position: relative;
+  z-index: 1;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.map-loading-skeleton--overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 450;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.river-map-viewport.is-ready .map-loading-skeleton--overlay {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .skeleton-station {
@@ -562,20 +607,6 @@ a:hover {
   width: 100%;
 }
 
-.river-map-boot {
-  position: absolute;
-  inset: 0;
-  z-index: 450;
-  background: #000;
-  pointer-events: none;
-  transition: opacity 0.15s ease;
-}
-
-.river-map-viewport.is-ready .river-map-boot {
-  opacity: 0;
-  visibility: hidden;
-}
-
 /* Leaflet defaults (#ddd tiles) load after globals — override with higher specificity */
 .river-map-frame .leaflet-container {
   background: #000;
@@ -597,15 +628,6 @@ a:hover {
 
 .river-map-frame .leaflet-layer.river-map-label-tiles img.leaflet-tile {
   filter: brightness(1.3) contrast(1.1);
-}
-
-.river-map-loading {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  font-size: 0.9rem;
 }
 
 .leaflet-tooltip.map-label {
@@ -696,6 +718,8 @@ a:hover {
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 320px;
 }
 
 .station {

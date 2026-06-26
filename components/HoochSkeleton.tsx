@@ -1,3 +1,4 @@
+import { MapLoadingSkeleton } from "@/components/MapLoadingSkeleton";
 import { STATIONS } from "@/lib/usgs";
 
 export function HoochSkeleton() {
@@ -9,7 +10,7 @@ export function HoochSkeleton() {
       </div>
 
       <p className="stations-heading">River map</p>
-      <div className="skeleton-map" />
+      <MapLoadingSkeleton className="skeleton-map" />
 
       <p className="stations-heading">Monitoring stations</p>
       <ul className="station-list">

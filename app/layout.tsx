@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Analytics } from "@vercel/analytics/next";
-
+import { AnalyticsDeferred } from "@/components/AnalyticsDeferred";
 import {
   siteDescription,
   siteKeywords,
@@ -68,7 +67,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
-        <Analytics />
+        <AnalyticsDeferred />
       </body>
     </html>
   );

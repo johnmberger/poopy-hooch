@@ -1,14 +1,19 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { FlyingPoop } from "@/components/FlyingPoop";
 import { LearnMore } from "@/components/LearnMore";
 import { RiverMap } from "@/components/RiverMap";
 import { getBacteriaReport } from "@/lib/bacteria-cache";
 import { E_COLI_THRESHOLD, type BacteriaReport } from "@/lib/usgs";
 import { HoochSkeleton } from "./HoochSkeleton";
+
+const FlyingPoop = dynamic(
+  () => import("@/components/FlyingPoop").then((mod) => ({ default: mod.FlyingPoop })),
+  { ssr: false },
+);
 
 function formatObservedAt(iso: string): string {
   return new Intl.DateTimeFormat("en-US", {
@@ -117,7 +122,7 @@ export function HoochDashboard({
         </li>
       </ul>
 
-      <FlyingPoop active={!report.summary.overallSafe || forcePoop} />
+      {(!report.summary.overallSafe || forcePoop) && <FlyingPoop active />}
     </>
   );
 }

@@ -1,9 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FeatureCollection } from "geojson";
 
+import { MapLoadingSkeleton } from "@/components/MapLoadingSkeleton";
 import type { StationReading } from "@/lib/usgs";
 import { MapPreconnect } from "@/components/MapPreconnect";
 import riverData from "@/data/chattahoochee-river.json";
@@ -12,7 +13,7 @@ const river = riverData as FeatureCollection;
 
 const RiverMapClient = dynamic(() => import("./RiverMapClient"), {
   ssr: false,
-  loading: () => <div className="river-map-loading" />,
+  loading: () => <MapLoadingSkeleton />,
 });
 
 interface RiverMapProps {
@@ -20,10 +21,32 @@ interface RiverMapProps {
 }
 
 export function RiverMap({ stations }: RiverMapProps) {
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [shouldLoadMap, setShouldLoadMap] = useState(false);
   const [mapInteractive, setMapInteractive] = useState(true);
   const [needsTouchGuard, setNeedsTouchGuard] = useState(false);
 
   useEffect(() => {
+    const frame = frameRef.current;
+    if (!frame) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoadMap(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "120px" },
+    );
+
+    observer.observe(frame);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!shouldLoadMap) return;
+
     const media = window.matchMedia("(pointer: coarse)");
 
     const sync = (coarse: boolean) => {
@@ -34,21 +57,26 @@ export function RiverMap({ stations }: RiverMapProps) {
     sync(media.matches);
     media.addEventListener("change", (event) => sync(event.matches));
     return () => media.removeEventListener("change", (event) => sync(event.matches));
-  }, []);
+  }, [shouldLoadMap]);
 
   return (
     <figure className="river-map">
       <figcaption className="stations-heading">River map</figcaption>
       <p className="section-note">Stations, river sections, and put-ins.</p>
       <div
+        ref={frameRef}
         className={`river-map-frame${mapInteractive ? " is-interactive" : ""}`}
       >
-        <MapPreconnect />
-        <RiverMapClient
-          river={river}
-          stations={stations}
-          interactive={mapInteractive}
-        />
+        {shouldLoadMap && <MapPreconnect />}
+        {shouldLoadMap ? (
+          <RiverMapClient
+            river={river}
+            stations={stations}
+            interactive={mapInteractive}
+          />
+        ) : (
+          <MapLoadingSkeleton />
+        )}
         {needsTouchGuard && !mapInteractive && (
           <button
             type="button"
