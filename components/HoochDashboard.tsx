@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 
-import { LearnMore } from "@/components/LearnMore";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { FlyingPoop } from "@/components/FlyingPoop";
+import { LearnMore } from "@/components/LearnMore";
 import { RiverMap } from "@/components/RiverMap";
 import { getBacteriaReport } from "@/lib/bacteria-cache";
 import { E_COLI_THRESHOLD, type BacteriaReport } from "@/lib/usgs";
@@ -25,7 +26,13 @@ function verdictClass(report: BacteriaReport): "safe" | "unsafe" | "mixed" {
   return "mixed";
 }
 
-export function HoochDashboard({ initialReport }: { initialReport: BacteriaReport | null }) {
+export function HoochDashboard({
+  initialReport,
+  forcePoop = false,
+}: {
+  initialReport: BacteriaReport | null;
+  forcePoop?: boolean;
+}) {
   const [report, setReport] = useState<BacteriaReport | null>(initialReport);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,7 +78,7 @@ export function HoochDashboard({ initialReport }: { initialReport: BacteriaRepor
     <>
       <section className={`verdict ${verdictClass(report)}`} aria-live="polite">
         <h2>{report.summary.headline}</h2>
-        <p>{report.summary.message}</p>
+        <p className="verdict-message">{report.summary.message}</p>
         <p className="verdict-context">
           Based on estimated E. coli at {report.stations.length} USGS stations on the Chattahoochee River.
         </p>
@@ -109,6 +116,8 @@ export function HoochDashboard({ initialReport }: { initialReport: BacteriaRepor
           <LearnMore />
         </li>
       </ul>
+
+      <FlyingPoop active={!report.summary.overallSafe || forcePoop} />
     </>
   );
 }

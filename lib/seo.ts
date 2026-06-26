@@ -5,6 +5,8 @@ export const siteUrl =
 
 export const siteName = "Is the Hooch poopy?";
 
+export const titleHelper = "Chattahoochee River E. coli status · Atlanta, Georgia";
+
 export const siteTitle = "Is the Hooch poopy? | Chattahoochee River Tubing & Safety Check";
 
 export const siteDescription =

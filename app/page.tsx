@@ -1,12 +1,18 @@
 import { BuiltByFooter } from "@/components/BuiltByFooter";
 import { HoochDashboard } from "@/components/HoochDashboard";
 import { getServerBacteriaReport } from "@/lib/bacteria-server";
-import { getStructuredData } from "@/lib/seo";
+import { getStructuredData, titleHelper } from "@/lib/seo";
 
 export const revalidate = 3600;
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ poop?: string }>;
+}) {
+  const { poop } = await searchParams;
   const initialReport = await getServerBacteriaReport();
+  const forcePoop = process.env.NODE_ENV === "development" && poop === "1";
 
   return (
     <main>
@@ -17,8 +23,9 @@ export default async function Home() {
 
       <article>
         <h1>Is the Hooch poopy?</h1>
+        <p className="title-helper">{titleHelper}</p>
 
-        <HoochDashboard initialReport={initialReport} />
+        <HoochDashboard initialReport={initialReport} forcePoop={forcePoop} />
       </article>
 
       <BuiltByFooter />
