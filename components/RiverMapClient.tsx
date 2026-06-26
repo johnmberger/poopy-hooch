@@ -7,7 +7,7 @@ import type { Feature, FeatureCollection, LineString } from "geojson";
 import type { TooltipOptions, LatLngBounds } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-import { PUT_INS } from "@/lib/put-ins";
+import { defaultPutIns, PUT_IN_DETAIL_ZOOM, putInsForZoom } from "@/lib/put-ins";
 import { MapLoadingSkeleton } from "@/components/MapLoadingSkeleton";
 import type { RiskLevel, StationReading } from "@/lib/usgs";
 
@@ -50,10 +50,65 @@ function segmentRisk(a: RiskLevel, b: RiskLevel): RiskLevel {
   return a === "high" || b === "high" ? "high" : "low";
 }
 
-function labelTooltipProps(side: "left" | "right"): Pick<TooltipOptions, "direction" | "offset"> {
-  return side === "right"
-    ? { direction: "right", offset: [8, 0] }
-    : { direction: "left", offset: [-8, 0] };
+function labelTooltipProps(side: "left" | "right" | "top" | "bottom"): Pick<TooltipOptions, "direction" | "offset"> {
+  if (side === "right") return { direction: "right", offset: [8, 0] };
+  if (side === "top") return { direction: "top", offset: [0, -8] };
+  if (side === "bottom") return { direction: "bottom", offset: [0, 8] };
+  return { direction: "left", offset: [-8, 0] };
+}
+
+function PutInPane() {
+  const map = useMap();
+
+  useEffect(() => {
+    if (map.getPane("putInPane")) return;
+    map.createPane("putInPane");
+    const pane = map.getPane("putInPane");
+    if (pane) pane.style.zIndex = "650";
+  }, [map]);
+
+  return null;
+}
+
+function PutInsLayer() {
+  const map = useMap();
+  const [zoom, setZoom] = useState(PUT_IN_DETAIL_ZOOM - 1);
+
+  useEffect(() => {
+    const update = () => setZoom(map.getZoom());
+    map.whenReady(update);
+    map.on("zoomend", update);
+    return () => {
+      map.off("zoomend", update);
+    };
+  }, [map]);
+
+  return (
+    <>
+      {putInsForZoom(zoom).map((putIn) => (
+        <CircleMarker
+          key={putIn.id}
+          pane="putInPane"
+          center={[putIn.lat, putIn.lng]}
+          radius={putIn.minZoom ? 4 : 5}
+          pathOptions={{
+            color: "#fff",
+            weight: 1.5,
+            fillColor: PUT_IN,
+            fillOpacity: 0.95,
+          }}
+        >
+          <Tooltip
+            permanent
+            {...labelTooltipProps(putIn.labelDirection)}
+            className={`map-label map-label-putin${putIn.minZoom ? " map-label-putin-detail" : ""}`}
+          >
+            {putIn.name}
+          </Tooltip>
+        </CircleMarker>
+      ))}
+    </>
+  );
 }
 
 function FitBounds({ bounds }: { bounds: LatLngBounds }) {
@@ -97,7 +152,7 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
   const bounds = useMemo((): LatLngBounds => {
     const outline = river.features.find((f) => f.properties?.kind === "river-outline");
     const points: [number, number][] = [
-      ...PUT_INS.map((p) => [p.lat, p.lng] as [number, number]),
+      ...defaultPutIns().map((p) => [p.lat, p.lng] as [number, number]),
       ...stations.map((s) => [s.lat, s.lng] as [number, number]),
     ];
 
@@ -139,6 +194,7 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
       >
         <MapInteraction interactive={interactive} />
         <FitBounds bounds={bounds} />
+        <PutInPane />
         <TileLayer
           url={TILE_BASE}
           className="river-map-base-tiles"
@@ -194,27 +250,7 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
         </CircleMarker>
       ))}
 
-      {PUT_INS.map((putIn) => (
-        <CircleMarker
-          key={putIn.id}
-          center={[putIn.lat, putIn.lng]}
-          radius={5}
-          pathOptions={{
-            color: "#fff",
-            weight: 1.5,
-            fillColor: PUT_IN,
-            fillOpacity: 0.95,
-          }}
-        >
-          <Tooltip
-            permanent
-            {...labelTooltipProps(putIn.labelDirection)}
-            className="map-label map-label-putin"
-          >
-            {putIn.name}
-          </Tooltip>
-        </CircleMarker>
-      ))}
+      <PutInsLayer />
       </MapContainer>
       {!tilesReady && <MapLoadingSkeleton overlay />}
     </div>
