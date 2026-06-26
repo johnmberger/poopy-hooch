@@ -13,6 +13,13 @@ export function SeoContent() {
         stations in the Chattahoochee River National Recreation Area (CRNRA).
       </p>
 
+      <h2>Chattahoochee River water quality today</h2>
+      <p>
+        This page tracks live E. coli at three USGS BacteriALERT stations along the main tubing
+        stretch of the CRNRA. Check the verdict above for today&apos;s water quality before you
+        float — bacteria can spike after rain even when the weather looks fine.
+      </p>
+
       <h2>Chattahoochee River weather vs. water quality</h2>
       <p>
         People often search river weather before a float — but sunny skies don&apos;t always mean

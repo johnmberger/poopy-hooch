@@ -5,12 +5,12 @@ export const siteUrl =
 
 export const siteName = "Is the Hooch poopy?";
 
-export const titleHelper = "Chattahoochee River E. coli status · Atlanta, Georgia";
+export const titleHelper = "Chattahoochee River water quality today · Atlanta, Georgia";
 
 export const siteTitle = "Is the Hooch poopy? | Chattahoochee River Tubing & Safety Check";
 
 export const siteDescription =
-  "Is it safe to shoot the Hooch today? Check Chattahoochee River E. coli bacteria levels before tubing or floating in Atlanta. Live USGS BacteriALERT readings at Medlock Bridge, Powers Ferry, and Paces Ferry.";
+  "Chattahoochee River water quality today — is it safe to shoot the Hooch? Check live E. coli bacteria levels before tubing or floating in Atlanta. USGS BacteriALERT readings at Medlock Bridge, Powers Ferry, and Paces Ferry.";
 
 export const siteKeywords = [
   "is the hooch poopy",
@@ -21,6 +21,7 @@ export const siteKeywords = [
   "chattahoochee river bacteria",
   "chattahoochee river e coli",
   "chattahoochee river water quality",
+  "chattahoochee river water quality today",
   "chattahoochee river safe to swim",
   "chattahoochee river safe today",
   "chattahoochee river conditions",
@@ -48,6 +49,11 @@ export const faqItems = [
     question: "Is it safe to shoot the Hooch?",
     answer:
       "It depends on current E. coli levels along the stretch you're floating. This site checks three USGS BacteriALERT monitoring stations in the Chattahoochee River National Recreation Area and shows which sections look clean or poopy right now.",
+  },
+  {
+    question: "What is the Chattahoochee River water quality today?",
+    answer:
+      "See the live verdict at the top of this page. We track E. coli — the main bacteria indicator for swimming and tubing — at three USGS stations along the CRNRA. Levels at or below 235 cfu/100 mL are considered low risk; above that, the river is more likely to make you sick.",
   },
   {
     question: "Is it safe to shoot the Hooch today?",
@@ -105,6 +111,7 @@ export function getStructuredData() {
         description: siteDescription,
         isPartOf: { "@id": `${siteUrl}/#website` },
         about: [
+          "Chattahoochee River water quality today",
           "Chattahoochee River tubing safety",
           "Chattahoochee River E. coli bacteria levels",
           "Shoot the Hooch water quality",
