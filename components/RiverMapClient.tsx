@@ -197,12 +197,13 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
         <PutInPane />
         <TileLayer
           url={TILE_BASE}
+          detectRetina
           className="river-map-base-tiles"
           eventHandlers={{
             load: () => setTilesReady(true),
           }}
         />
-        <TileLayer url={TILE_LABELS} className="river-map-label-tiles" />
+        <TileLayer url={TILE_LABELS} detectRetina className="river-map-label-tiles" />
 
       {outline && (
         <GeoJSON
