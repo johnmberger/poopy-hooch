@@ -121,14 +121,10 @@ h1 {
   margin: 0;
 }
 
-.learn-more {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
 .station-list-more {
   list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 
 .learn-more-toggle {
@@ -731,8 +727,6 @@ a:hover {
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 320px;
 }
 
 .station {
@@ -763,8 +757,6 @@ a:hover {
 }
 
 .learn-more-skeleton {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
   padding: 0.65rem 1rem;
 }
 
