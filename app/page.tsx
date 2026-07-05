@@ -1,6 +1,7 @@
 import { BuiltByFooter } from "@/components/BuiltByFooter";
+import { UsgsBacterialertLink } from "@/components/UsgsBacterialertLink";
 import { HoochDashboard } from "@/components/HoochDashboard";
-import { getServerBacteriaReport } from "@/lib/bacteria-server";
+import { getServerBacteriaHistory, getServerBacteriaReport } from "@/lib/bacteria-server";
 import { getStructuredData, titleHelper } from "@/lib/seo";
 
 export const revalidate = 3600;
@@ -11,7 +12,10 @@ export default async function Home({
   searchParams: Promise<{ poop?: string }>;
 }) {
   const { poop } = await searchParams;
-  const initialReport = await getServerBacteriaReport();
+  const [initialReport, historyPreview] = await Promise.all([
+    getServerBacteriaReport(),
+    getServerBacteriaHistory("P7D"),
+  ]);
   const forcePoop = process.env.NODE_ENV === "development" && poop === "1";
 
   return (
@@ -25,7 +29,11 @@ export default async function Home({
         <h1>Is the Hooch poopy?</h1>
         <p className="title-helper">{titleHelper}</p>
 
-        <HoochDashboard initialReport={initialReport} forcePoop={forcePoop} />
+        <HoochDashboard
+          initialReport={initialReport}
+          historyPreview={historyPreview}
+          forcePoop={forcePoop}
+        />
       </article>
 
       <BuiltByFooter />
@@ -33,8 +41,7 @@ export default async function Home({
       <noscript>
         <p className="noscript">
           Is it safe to shoot the Hooch today? This page needs JavaScript for the live map and
-          bacteria check. See official readings at{" "}
-          <a href="https://ga.water.usgs.gov/bacteria/">USGS BacteriALERT</a>.
+          bacteria check. See official readings at <UsgsBacterialertLink />.
         </p>
       </noscript>
     </main>

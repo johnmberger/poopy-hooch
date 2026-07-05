@@ -1,5 +1,9 @@
 export const E_COLI_THRESHOLD = 235;
 
+export const USGS_BACTERIA_URL = "https://ga.water.usgs.gov/bacteria/";
+
+export const STATION_CHART_COLORS = ["#93c5fd", "#a78bfa", "#fbbf24"] as const;
+
 export const STATIONS = [
   {
     id: "02335000",
@@ -144,6 +148,107 @@ export function buildSummary(stations: StationReading[]): BacteriaReport["summar
 
 export const USGS_IV_URL =
   "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=02335000,02335880,02336000&parameterCd=99407,63680&siteStatus=all";
+
+export type HistoryPeriod = "P7D" | "P30D" | "P120D";
+
+export const HISTORY_PERIODS: { value: HistoryPeriod; label: string }[] = [
+  { value: "P7D", label: "7 days" },
+  { value: "P30D", label: "30 days" },
+  { value: "P120D", label: "4 months" },
+];
+
+export interface HistoryPoint {
+  dateTime: string;
+  eColi: number;
+}
+
+export interface StationHistory {
+  id: string;
+  name: string;
+  points: HistoryPoint[];
+}
+
+export interface BacteriaHistoryReport {
+  period: HistoryPeriod;
+  stations: StationHistory[];
+}
+
+export const MAX_HISTORY_CHART_POINTS = 400;
+
+function parseEcoliHistory(entry: TimeSeriesEntry): HistoryPoint[] {
+  for (const valuesBlock of entry.values) {
+    const method = valuesBlock.method?.[0]?.methodDescription ?? "";
+    if (method.includes("E. coli") && !method.includes("Std Deviation") && !method.includes("Prediction")) {
+      return valuesBlock.value
+        .map((raw) => {
+          const num = Number(raw.value);
+          return Number.isFinite(num) && num >= 0 ? { eColi: num, dateTime: raw.dateTime } : null;
+        })
+        .filter((point): point is HistoryPoint => point !== null);
+    }
+  }
+  return [];
+}
+
+export function downsampleHistory(points: HistoryPoint[], maxPoints: number): HistoryPoint[] {
+  if (points.length <= maxPoints) return points;
+
+  const bucketSize = Math.ceil(points.length / maxPoints);
+  const result: HistoryPoint[] = [];
+
+  for (let i = 0; i < points.length; i += bucketSize) {
+    const bucket = points.slice(i, i + bucketSize);
+    const peak = bucket.reduce((best, point) => (point.eColi > best.eColi ? point : best), bucket[0]!);
+    result.push(peak);
+  }
+
+  return result;
+}
+
+export function usgsHistoryUrl(period: HistoryPeriod): string {
+  const sites = STATIONS.map((station) => station.id).join(",");
+  return `https://waterservices.usgs.gov/nwis/iv/?format=json&sites=${sites}&parameterCd=99407&period=${period}&siteStatus=all`;
+}
+
+export function parseUsgsHistoryResponse(data: UsgsIvResponse, period: HistoryPeriod): BacteriaHistoryReport {
+  const timeSeries = data.value?.timeSeries ?? [];
+  const historyBySite = new Map<string, HistoryPoint[]>();
+
+  for (const entry of timeSeries) {
+    const siteId = entry.sourceInfo.siteCode[0]?.value;
+    const paramCode = entry.variable.variableCode[0]?.value;
+    if (!siteId || paramCode !== "99407") continue;
+
+    const points = parseEcoliHistory(entry);
+    if (points.length) historyBySite.set(siteId, points);
+  }
+
+  const stations: StationHistory[] = STATIONS.map((station) => {
+    const points = historyBySite.get(station.id) ?? [];
+    const sorted = [...points].sort((a, b) => a.dateTime.localeCompare(b.dateTime));
+    return {
+      id: station.id,
+      name: station.name,
+      points: downsampleHistory(sorted, MAX_HISTORY_CHART_POINTS),
+    };
+  });
+
+  return { period, stations };
+}
+
+export async function fetchBacteriaHistory(period: HistoryPeriod): Promise<BacteriaHistoryReport> {
+  const res = await fetch(usgsHistoryUrl(period), {
+    headers: { Accept: "application/json" },
+    next: { revalidate: 3600 },
+  });
+
+  if (!res.ok) {
+    throw new Error(`USGS API returned ${res.status}`);
+  }
+
+  const data = (await res.json()) as UsgsIvResponse;
+  return parseUsgsHistoryResponse(data, period);
+}
 
 export async function fetchBacteriaReport(): Promise<BacteriaReport> {
   const res = await fetch(USGS_IV_URL, {

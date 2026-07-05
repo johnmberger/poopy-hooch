@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
   E_COLI_THRESHOLD,
   buildSummary,
+  downsampleHistory,
+  parseUsgsHistoryResponse,
   parseUsgsResponse,
   riskFromEcoli,
   type StationReading,
@@ -31,6 +33,19 @@ function ecoliSeries(siteId: string, value: number, dateTime = "2026-07-04T22:00
     values: [
       {
         value: [{ value: String(value), dateTime }],
+        method: [{ methodDescription: "E. coli" }],
+      },
+    ],
+  };
+}
+
+function ecoliHistorySeries(siteId: string, points: Array<{ value: number; dateTime: string }>) {
+  return {
+    sourceInfo: { siteCode: [{ value: siteId }] },
+    variable: { variableCode: [{ value: "99407" }], variableName: "E. coli" },
+    values: [
+      {
+        value: points.map((point) => ({ value: String(point.value), dateTime: point.dateTime })),
         method: [{ methodDescription: "E. coli" }],
       },
     ],
@@ -122,5 +137,51 @@ describe("parseUsgsResponse", () => {
     };
 
     expect(() => parseUsgsResponse(data)).toThrow(/Missing E\. coli data/);
+  });
+});
+
+describe("downsampleHistory", () => {
+  it("keeps peak readings when downsampling", () => {
+    const points = [
+      { dateTime: "2026-07-01T00:00:00-04:00", eColi: 10 },
+      { dateTime: "2026-07-01T01:00:00-04:00", eColi: 500 },
+      { dateTime: "2026-07-01T02:00:00-04:00", eColi: 20 },
+      { dateTime: "2026-07-01T03:00:00-04:00", eColi: 30 },
+    ];
+
+    const downsampled = downsampleHistory(points, 2);
+
+    expect(downsampled).toHaveLength(2);
+    expect(downsampled.some((point) => point.eColi === 500)).toBe(true);
+  });
+});
+
+describe("parseUsgsHistoryResponse", () => {
+  it("maps historical E. coli time series for each station", () => {
+    const data: UsgsIvResponse = {
+      value: {
+        timeSeries: [
+          ecoliHistorySeries("02335000", [
+            { value: 120, dateTime: "2026-07-01T10:00:00-04:00" },
+            { value: 180, dateTime: "2026-07-02T10:00:00-04:00" },
+          ]),
+          ecoliHistorySeries("02335880", [{ value: 90, dateTime: "2026-07-01T10:00:00-04:00" }]),
+          ecoliHistorySeries("02336000", [{ value: 260, dateTime: "2026-07-01T10:00:00-04:00" }]),
+        ],
+      },
+    };
+
+    const history = parseUsgsHistoryResponse(data, "P7D");
+
+    expect(history.period).toBe("P7D");
+    expect(history.stations).toHaveLength(3);
+    expect(history.stations[0]?.points).toEqual([
+      { eColi: 120, dateTime: "2026-07-01T10:00:00-04:00" },
+      { eColi: 180, dateTime: "2026-07-02T10:00:00-04:00" },
+    ]);
+    expect(history.stations[2]?.points[0]).toEqual({
+      eColi: 260,
+      dateTime: "2026-07-01T10:00:00-04:00",
+    });
   });
 });

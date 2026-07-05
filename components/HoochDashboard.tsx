@@ -1,13 +1,16 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { HistorySparkline } from "@/components/HistorySparkline";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { LearnMore } from "@/components/LearnMore";
+import { UsgsBacterialertLink } from "@/components/UsgsBacterialertLink";
 import { RiverMap } from "@/components/RiverMap";
 import { getBacteriaReport } from "@/lib/bacteria-cache";
-import { E_COLI_THRESHOLD, type BacteriaReport } from "@/lib/usgs";
+import { E_COLI_THRESHOLD, type BacteriaHistoryReport, type BacteriaReport } from "@/lib/usgs";
 import { HoochSkeleton } from "./HoochSkeleton";
 
 const FlyingPoop = dynamic(
@@ -33,9 +36,11 @@ function verdictClass(report: BacteriaReport): "safe" | "unsafe" | "mixed" {
 
 export function HoochDashboard({
   initialReport,
+  historyPreview = null,
   forcePoop = false,
 }: {
   initialReport: BacteriaReport | null;
+  historyPreview?: BacteriaHistoryReport | null;
   forcePoop?: boolean;
 }) {
   const [report, setReport] = useState<BacteriaReport | null>(initialReport);
@@ -66,10 +71,7 @@ export function HoochDashboard({
       <div className="error-box">
         <p>welp. {error}</p>
         <p style={{ marginTop: "0.75rem", fontSize: "0.85rem" }}>
-          try again or hit up{" "}
-          <a href="https://ga.water.usgs.gov/bacteria/" target="_blank" rel="noopener noreferrer">
-            USGS BacteriALERT
-          </a>
+          try again or hit up <UsgsBacterialertLink />.
         </p>
       </div>
     );
@@ -117,6 +119,22 @@ export function HoochDashboard({
             </span>
           </li>
         ))}
+        <li className="station-list-more">
+          <Link href="/history" className="station-list-link">
+            <span className="station-list-link-text">
+              <span className="station-name">Recent levels</span>
+              <span className="station-section">7 days, 30 days, and 4 months of E. coli trends</span>
+            </span>
+            <span className="station-list-link-aside">
+              {historyPreview && historyPreview.stations.some((station) => station.points.length > 0) && (
+                <HistorySparkline stations={historyPreview.stations} />
+              )}
+              <span className="station-list-link-icon" aria-hidden="true">
+                →
+              </span>
+            </span>
+          </Link>
+        </li>
         <li className="station-list-more">
           <LearnMore />
         </li>

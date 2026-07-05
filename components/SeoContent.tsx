@@ -1,5 +1,6 @@
 import { E_COLI_THRESHOLD, STATIONS } from "@/lib/usgs";
 import { faqItems } from "@/lib/seo";
+import { linkifyBacterialert, UsgsBacterialertLink } from "@/components/UsgsBacterialertLink";
 
 export function SeoContent() {
   return (
@@ -8,14 +9,13 @@ export function SeoContent() {
       <p>
         &quot;Shoot the Hooch&quot; means floating or tubing down the Chattahoochee River through
         Atlanta. Before you grab a tube, it helps to know if the water&apos;s gross. This site
-        pulls live E. coli estimates from the{" "}
-        <a href="https://ga.water.usgs.gov/bacteria/">USGS BacteriALERT</a> program at three
+        pulls live E. coli estimates from the <UsgsBacterialertLink /> program at three
         stations in the Chattahoochee River National Recreation Area (CRNRA).
       </p>
 
       <h2>Chattahoochee River water quality today</h2>
       <p>
-        This page tracks live E. coli at three USGS BacteriALERT stations along the main tubing
+        This page tracks live E. coli at three <UsgsBacterialertLink /> stations along the main tubing
         stretch of the CRNRA. Check the verdict above for today&apos;s water quality before you
         float — bacteria can spike after rain even when the weather looks fine.
       </p>
@@ -45,7 +45,7 @@ export function SeoContent() {
         {faqItems.map((item) => (
           <div key={item.question} className="seo-faq-item">
             <dt>{item.question}</dt>
-            <dd>{item.answer}</dd>
+            <dd>{linkifyBacterialert(item.answer)}</dd>
           </div>
         ))}
       </dl>
