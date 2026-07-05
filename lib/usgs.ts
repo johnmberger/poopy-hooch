@@ -137,9 +137,10 @@ export function buildSummary(stations: StationReading[]): BacteriaReport["summar
 
   const safeNames = safe.map((s) => s.name).join(" & ");
   const unsafeNames = unsafe.map((s) => s.name).join(" & ");
+  const safeVerb = safe.length === 1 ? "is" : "are";
   return {
     headline: "Partly poopy",
-    message: `${safeNames} are fine. Avoid ${unsafeNames}.`,
+    message: `${safeNames} ${safeVerb} fine. Avoid ${unsafeNames}.`,
     overallSafe: false,
     safeCount,
     totalCount,

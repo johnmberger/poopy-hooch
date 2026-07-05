@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Poop {
-  id: number;
   duration: number;
   size: number;
   rotation: number;
@@ -14,11 +13,12 @@ interface FlyingPoopProps {
   active: boolean;
 }
 
-const MAX_POOPS = 3;
+const SPAWN_DELAY_MS = 10_000;
 
 export function FlyingPoop({ active }: FlyingPoopProps) {
-  const [poops, setPoops] = useState<Poop[]>([]);
+  const [poop, setPoop] = useState<Poop | null>(null);
   const [motionOk, setMotionOk] = useState(false);
+  const hasScheduledRef = useRef(false);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -29,72 +29,37 @@ export function FlyingPoop({ active }: FlyingPoopProps) {
   }, []);
 
   useEffect(() => {
-    if (!active) {
-      setPoops([]);
-    }
-  }, [active]);
+    if (!active || !motionOk || hasScheduledRef.current) return;
 
-  useEffect(() => {
-    if (!active || !motionOk) return;
-
-    let cancelled = false;
-    let idCounter = 0;
-    let spawnCount = 0;
-    let timeoutId: ReturnType<typeof setTimeout>;
-
-    const spawn = () => {
-      if (spawnCount >= MAX_POOPS) return;
-      spawnCount += 1;
-
-      const poop: Poop = {
-        id: idCounter++,
+    hasScheduledRef.current = true;
+    const timeoutId = setTimeout(() => {
+      setPoop({
         duration: 4.5 + Math.random() * 2.5,
         size: 1.1 + Math.random() * 0.7,
         rotation: -15 + Math.random() * 30,
         rise: 75 + Math.random() * 20,
-      };
-      setPoops((prev) => [...prev, poop]);
-    };
+      });
+    }, SPAWN_DELAY_MS);
 
-    const schedule = () => {
-      if (cancelled || spawnCount >= MAX_POOPS) return;
-      const delay = 6000 + Math.random() * 8000;
-      timeoutId = setTimeout(() => {
-        spawn();
-        schedule();
-      }, delay);
-    };
-
-    timeoutId = setTimeout(() => {
-      spawn();
-      schedule();
-    }, 2000 + Math.random() * 3000);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timeoutId);
-    };
+    return () => clearTimeout(timeoutId);
   }, [active, motionOk]);
 
-  if (!active || !motionOk) return null;
+  if (!active || !motionOk || !poop) return null;
 
   return (
     <div className="flying-poop-layer" aria-hidden="true">
-      {poops.map((poop) => (
-        <span
-          key={poop.id}
-          className="flying-poop"
-          style={{
-            animationDuration: `${poop.duration}s`,
-            fontSize: `${poop.size}rem`,
-            ["--poop-rotation" as string]: `${poop.rotation}deg`,
-            ["--poop-rise" as string]: `${poop.rise}vh`,
-          }}
-          onAnimationEnd={() => setPoops((prev) => prev.filter((p) => p.id !== poop.id))}
-        >
-          💩
-        </span>
-      ))}
+      <span
+        className="flying-poop"
+        style={{
+          animationDuration: `${poop.duration}s`,
+          fontSize: `${poop.size}rem`,
+          ["--poop-rotation" as string]: `${poop.rotation}deg`,
+          ["--poop-rise" as string]: `${poop.rise}vh`,
+        }}
+        onAnimationEnd={() => setPoop(null)}
+      >
+        💩
+      </span>
     </div>
   );
 }

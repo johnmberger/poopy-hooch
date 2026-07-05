@@ -104,8 +104,17 @@ describe("buildSummary", () => {
 
     expect(summary.overallSafe).toBe(false);
     expect(summary.headline).toBe("Partly poopy");
-    expect(summary.message).toContain("Medlock Bridge");
-    expect(summary.message).toContain("Powers Ferry");
+    expect(summary.message).toBe("Medlock Bridge & Paces Ferry are fine. Avoid Powers Ferry.");
+  });
+
+  it("uses singular grammar when only one station is clean", () => {
+    const summary = buildSummary([
+      station({ name: "Medlock Bridge", risk: "high", eColi: 300 }),
+      station({ name: "Powers Ferry", risk: "high", eColi: 400 }),
+      station({ name: "Paces Ferry", risk: "low" }),
+    ]);
+
+    expect(summary.message).toBe("Paces Ferry is fine. Avoid Medlock Bridge & Powers Ferry.");
   });
 });
 
