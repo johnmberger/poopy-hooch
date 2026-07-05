@@ -152,9 +152,21 @@ h1 {
   list-style: none;
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
-.station-list-link {
+.station-list-more:has(
+  .station-list-link:hover,
+  .station-list-link:focus-visible,
+  .learn-more-toggle:hover,
+  .learn-more-toggle:focus-visible
+) {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.station-list-link,
+.learn-more-toggle {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -162,16 +174,40 @@ h1 {
   padding: 0.65rem 1rem;
   min-height: 3.75rem;
   color: var(--text);
+}
+
+.station-list-link {
   text-decoration: none;
 }
 
 .station-list-link:hover,
-.station-list-link:focus-visible {
+.station-list-link:focus-visible,
+.learn-more-toggle:hover,
+.learn-more-toggle:focus-visible {
   outline: none;
 }
 
+.station-list-link:hover .station-section,
+.station-list-link:focus-visible .station-section,
+.learn-more-toggle:hover .station-section,
+.learn-more-toggle:focus-visible .station-section {
+  color: var(--text);
+  opacity: 0.72;
+}
+
+.station-list-link-icon,
+.learn-more-icon {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
 .station-list-link:hover .station-list-link-icon,
-.station-list-link:focus-visible .station-list-link-icon {
+.station-list-link:focus-visible .station-list-link-icon,
+.learn-more-toggle:hover .learn-more-icon,
+.learn-more-toggle:focus-visible .learn-more-icon {
   color: var(--text);
   transform: translateX(2px);
 }
@@ -207,25 +243,10 @@ h1 {
   stroke-linejoin: round;
 }
 
-.station-list-link-icon {
-  color: var(--text-muted);
-  font-size: 1.1rem;
-  line-height: 1;
-  flex-shrink: 0;
-  transition: color 0.15s ease, transform 0.15s ease;
-}
-
 .learn-more-toggle {
   list-style: none;
   cursor: pointer;
-  padding: 0.65rem 1rem;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
   user-select: none;
-  min-height: 3.75rem;
 }
 
 .learn-more-toggle::-webkit-details-marker {
@@ -238,20 +259,11 @@ h1 {
 
 .learn-more-icon::before {
   content: "+";
-  font-size: 1.1rem;
   font-weight: 400;
-  color: var(--text-muted);
-  line-height: 1;
-  flex-shrink: 0;
-  transition: color 0.15s ease;
 }
 
 .learn-more[open] .learn-more-icon::before {
   content: "−";
-}
-
-.learn-more-toggle:hover .learn-more-icon::before {
-  color: var(--text);
 }
 
 .learn-more-panel {
@@ -1220,6 +1232,7 @@ a:hover {
     padding: 0.75rem 0.85rem;
   }
 
+  .station-list-link,
   .learn-more-toggle,
   .learn-more-skeleton {
     padding: 0.6rem 0.85rem;
