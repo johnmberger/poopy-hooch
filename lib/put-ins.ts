@@ -119,6 +119,14 @@ const RAW_PUT_INS: PutIn[] = [
     minZoom: PUT_IN_DETAIL_ZOOM,
   },
   {
+    id: "whitewater-creek",
+    name: "Whitewater Creek",
+    lat: 33.8776,
+    lng: -84.4399,
+    labelDirection: "left",
+    minZoom: PUT_IN_DETAIL_ZOOM,
+  },
+  {
     id: "paces-mill",
     name: "Paces Mill",
     lat: 33.86,
