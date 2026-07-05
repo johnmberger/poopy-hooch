@@ -12,25 +12,44 @@ It pulls estimated E. coli levels from the [USGS BacteriALERT program](https://g
 
 Readings ≤ **235 cfu/100 mL** are considered low risk per EPA beach action values — the same threshold used on the BacteriALERT site.
 
-## Run locally
+## Contributing
+
+### Prerequisites
+
+- Node.js 22+
+- npm
+
+### Setup
 
 ```bash
+git clone https://github.com/johnmberger/poopy-hooch.git
+cd poopy-hooch
 npm install
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Set `NEXT_PUBLIC_SITE_URL` to your production domain (e.g. `https://isthehoochpoopy.com`) for correct canonical URLs, sitemap, and Open Graph tags.
+### Scripts
 
-## Deploy
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start the dev server |
+| `npm test` | Run unit tests |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run build` | Production build |
+| `npm run lint` | Lint (requires ESLint setup) |
 
-Deploy to Vercel or any Node host. The `/api/bacteria` route fetches USGS once per hour and caches the response at the edge; all users share the same cached data.
+Pull requests run CI on GitHub: tests and build must pass.
 
-## Data source
+## Data sources
 
 - [USGS NWIS instantaneous values API](https://waterservices.usgs.gov/) — fetched server-side via `/api/bacteria` (cached 1 hour)
 - Same data shown on [ga.water.usgs.gov/bacteria](https://ga.water.usgs.gov/bacteria/)
 - River geometry from [OpenStreetMap](https://www.openstreetmap.org/) (stored in `data/chattahoochee-river.json`)
 
 Data is provisional and model-estimated. Always use your own judgment and check official advisories before getting on the river.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
