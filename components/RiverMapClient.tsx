@@ -9,10 +9,8 @@ import "leaflet/dist/leaflet.css";
 
 import { defaultPutIns, PUT_IN_DETAIL_ZOOM, putInsForZoom } from "@/lib/put-ins";
 import { MapLoadingSkeleton } from "@/components/MapLoadingSkeleton";
-import type { RiskLevel, StationReading } from "@/lib/usgs";
+import { riverSegmentGradient, type StationReading } from "@/lib/usgs";
 
-const CLEAN = "#4ade80";
-const POOPY = "#f87171";
 const PUT_IN = "#93c5fd";
 
 const TILE_BASE = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png";
@@ -44,10 +42,6 @@ function MapInteraction({ interactive }: { interactive: boolean }) {
   }, [map, interactive]);
 
   return null;
-}
-
-function segmentRisk(a: RiskLevel, b: RiskLevel): RiskLevel {
-  return a === "high" || b === "high" ? "high" : "low";
 }
 
 function labelTooltipProps(side: "left" | "right" | "top" | "bottom"): Pick<TooltipOptions, "direction" | "offset"> {
@@ -144,9 +138,30 @@ function FitBounds({ bounds }: { bounds: LatLngBounds }) {
 }
 
 export default function RiverMapClient({ river, stations, interactive }: RiverMapClientProps) {
-  const segmentRisks = useMemo(
-    () => [segmentRisk(stations[0].risk, stations[1].risk), segmentRisk(stations[1].risk, stations[2].risk)],
-    [stations],
+  const coloredSegments = useMemo(
+    () =>
+      river.features
+        .filter((feature) => feature.properties?.kind === "river-segment")
+        .flatMap((feature) => {
+          const segment = feature as Feature<LineString>;
+          const segmentIndex = segment.properties?.segmentIndex;
+          if (typeof segmentIndex !== "number") return [];
+
+          const upstream = stations[segmentIndex]?.risk;
+          const downstream = stations[segmentIndex + 1]?.risk;
+          if (!upstream || !downstream) return [];
+
+          const coordinates = segment.geometry.coordinates.map(
+            (point) => [point[0]!, point[1]!] as [number, number],
+          );
+
+          return riverSegmentGradient(upstream, downstream, coordinates).map((part, partIndex) => ({
+            key: `${segmentIndex}-${partIndex}`,
+            color: part.color,
+            coordinates: part.coordinates,
+          }));
+        }),
+    [river, stations],
   );
 
   const bounds = useMemo((): LatLngBounds => {
@@ -177,7 +192,6 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
   const outline = river.features.find((f) => f.properties?.kind === "river-outline") as
     | Feature<LineString>
     | undefined;
-  const segments = river.features.filter((f) => f.properties?.kind === "river-segment") as Feature<LineString>[];
 
   const [tilesReady, setTilesReady] = useState(false);
 
@@ -212,12 +226,21 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
         />
       )}
 
-      {segments.map((segment, index) => (
+      {coloredSegments.map((segment) => (
         <GeoJSON
-          key={segment.properties?.segmentIndex ?? index}
-          data={segment}
+          key={segment.key}
+          data={
+            {
+              type: "Feature",
+              properties: {},
+              geometry: {
+                type: "LineString",
+                coordinates: segment.coordinates,
+              },
+            } as Feature<LineString>
+          }
           pathOptions={{
-            color: segmentRisks[index] === "low" ? CLEAN : POOPY,
+            color: segment.color,
             weight: 7,
             opacity: 0.95,
             lineCap: "round",
@@ -234,7 +257,7 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
           pathOptions={{
             color: "#000",
             weight: 2,
-            fillColor: station.risk === "low" ? CLEAN : POOPY,
+            fillColor: station.risk === "low" ? "#4ade80" : "#f87171",
             fillOpacity: 1,
           }}
         >

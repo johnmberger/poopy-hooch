@@ -62,7 +62,9 @@ export function RiverMap({ stations }: RiverMapProps) {
   return (
     <figure className="river-map">
       <figcaption className="stations-heading">River map</figcaption>
-      <p className="section-note">Stations, river sections, and put-ins. Zoom in for more.</p>
+      <p className="section-note">
+        River color blends between monitoring stations downstream. Zoom in for put-ins.
+      </p>
       <div
         ref={frameRef}
         className={`river-map-frame${mapInteractive ? " is-interactive" : ""}`}

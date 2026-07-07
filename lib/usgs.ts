@@ -109,6 +109,71 @@ export function riskFromEcoli(eColi: number): RiskLevel {
   return eColi <= E_COLI_THRESHOLD ? "low" : "high";
 }
 
+export const RIVER_CLEAN_COLOR = "#4ade80";
+export const RIVER_POOPY_COLOR = "#f87171";
+const RIVER_GRADIENT_STEPS = 20;
+
+export interface RiverGradientPart {
+  coordinates: [number, number][];
+  color: string;
+}
+
+function hexToRgb(hex: string): [number, number, number] {
+  const normalized = hex.replace("#", "");
+  return [
+    Number.parseInt(normalized.slice(0, 2), 16),
+    Number.parseInt(normalized.slice(2, 4), 16),
+    Number.parseInt(normalized.slice(4, 6), 16),
+  ];
+}
+
+function rgbToHex([r, g, b]: [number, number, number]): string {
+  return `#${[r, g, b].map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
+}
+
+export function blendRiverColors(from: RiskLevel, to: RiskLevel, amount: number): string {
+  const clamped = Math.min(Math.max(amount, 0), 1);
+  const fromRgb = hexToRgb(from === "low" ? RIVER_CLEAN_COLOR : RIVER_POOPY_COLOR);
+  const toRgb = hexToRgb(to === "low" ? RIVER_CLEAN_COLOR : RIVER_POOPY_COLOR);
+  return rgbToHex([
+    Math.round(fromRgb[0] + (toRgb[0] - fromRgb[0]) * clamped),
+    Math.round(fromRgb[1] + (toRgb[1] - fromRgb[1]) * clamped),
+    Math.round(fromRgb[2] + (toRgb[2] - fromRgb[2]) * clamped),
+  ]);
+}
+
+/** Fade river color between two station readings along the segment. */
+export function riverSegmentGradient(
+  upstream: RiskLevel,
+  downstream: RiskLevel,
+  coordinates: [number, number][],
+): RiverGradientPart[] {
+  if (coordinates.length < 2) return [];
+
+  if (upstream === downstream) {
+    return [{ coordinates, color: blendRiverColors(upstream, downstream, 0) }];
+  }
+
+  const steps = Math.min(RIVER_GRADIENT_STEPS, coordinates.length - 1);
+  const lastIndex = coordinates.length - 1;
+  const parts: RiverGradientPart[] = [];
+
+  for (let step = 0; step < steps; step++) {
+    const startIdx = Math.round((step / steps) * lastIndex);
+    let endIdx = Math.round(((step + 1) / steps) * lastIndex);
+    if (step === steps - 1) endIdx = lastIndex;
+    if (endIdx <= startIdx) continue;
+
+    const amount = steps === 1 ? 0.5 : step / (steps - 1);
+    parts.push({
+      coordinates: coordinates.slice(startIdx, endIdx + 1),
+      color: blendRiverColors(upstream, downstream, amount),
+    });
+  }
+
+  return parts.length > 0 ? parts : [{ coordinates, color: blendRiverColors(upstream, downstream, 0.5) }];
+}
+
 export function buildSummary(stations: StationReading[]): BacteriaReport["summary"] {
   const safe = stations.filter((s) => s.risk === "low");
   const unsafe = stations.filter((s) => s.risk === "high");

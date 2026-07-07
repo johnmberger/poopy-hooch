@@ -6,6 +6,8 @@ import {
   downsampleHistory,
   parseUsgsHistoryResponse,
   parseUsgsResponse,
+  blendRiverColors,
+  riverSegmentGradient,
   riskFromEcoli,
   type StationReading,
   type UsgsIvResponse,
@@ -115,6 +117,48 @@ describe("buildSummary", () => {
     ]);
 
     expect(summary.message).toBe("Paces Ferry is fine. Avoid Medlock Bridge & Powers Ferry.");
+  });
+});
+
+describe("blendRiverColors", () => {
+  it("returns the clean color at the start of a clean segment", () => {
+    expect(blendRiverColors("low", "low", 0)).toBe("#4ade80");
+  });
+
+  it("returns the poopy color at the end of a dirty segment", () => {
+    expect(blendRiverColors("high", "high", 1)).toBe("#f87171");
+  });
+
+  it("blends from clean to poopy along a mixed segment", () => {
+    const mid = blendRiverColors("low", "high", 0.5);
+    expect(mid).not.toBe("#4ade80");
+    expect(mid).not.toBe("#f87171");
+  });
+});
+
+describe("riverSegmentGradient", () => {
+  const coords: [number, number][] = Array.from({ length: 41 }, (_, index) => [index, index]);
+
+  it("returns one solid part when both stations match", () => {
+    expect(riverSegmentGradient("low", "low", coords)).toEqual([
+      { coordinates: coords, color: "#4ade80" },
+    ]);
+  });
+
+  it("creates a multi-step fade between mismatched stations", () => {
+    const parts = riverSegmentGradient("low", "high", coords);
+
+    expect(parts.length).toBeGreaterThan(1);
+    expect(parts[0]?.color).toBe("#4ade80");
+    expect(parts.at(-1)?.color).toBe("#f87171");
+    expect(new Set(parts.map((part) => part.color)).size).toBeGreaterThan(2);
+  });
+
+  it("fades from poopy upstream to clean downstream", () => {
+    const parts = riverSegmentGradient("high", "low", coords);
+
+    expect(parts[0]?.color).toBe("#f87171");
+    expect(parts.at(-1)?.color).toBe("#4ade80");
   });
 });
 
