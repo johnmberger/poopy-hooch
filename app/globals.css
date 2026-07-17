@@ -833,22 +833,23 @@ html[data-theme="light"] .map-loading-skeleton::before {
   background: var(--map-chrome);
 }
 
-/* Dark mode: crush Voyager into a near-black basemap, then lighten labels on top */
-html[data-theme="dark"] .river-map-frame .leaflet-layer.river-map-base-tiles img.leaflet-tile {
+/* Dark mode: crush Voyager into a near-black basemap, then lighten labels on top.
+   Scoped to the map viewport (not html) so mobile Safari can't keep a stale filtered composite. */
+.river-map-viewport[data-map-theme="dark"] .leaflet-layer.river-map-base-tiles img.leaflet-tile {
   filter: brightness(0.34) contrast(1.75) saturate(0.22) grayscale(0.15);
 }
 
-html[data-theme="dark"] .river-map-frame .leaflet-layer.river-map-label-tiles {
+.river-map-viewport[data-map-theme="dark"] .leaflet-layer.river-map-label-tiles {
   mix-blend-mode: lighten;
 }
 
-html[data-theme="dark"] .river-map-frame .leaflet-layer.river-map-label-tiles img.leaflet-tile {
+.river-map-viewport[data-map-theme="dark"] .leaflet-layer.river-map-label-tiles img.leaflet-tile {
   filter: brightness(1.3) contrast(1.1);
 }
 
-/* Light mode: natural Voyager streets + labels, no filter stack */
-html[data-theme="light"] .river-map-frame .leaflet-layer.river-map-base-tiles img.leaflet-tile {
+.river-map-viewport[data-map-theme="light"] .leaflet-layer.river-map-base-tiles img.leaflet-tile {
   filter: none;
+  -webkit-filter: none;
 }
 
 .leaflet-tooltip.map-label {
@@ -1226,23 +1227,6 @@ html[data-theme="light"] .river-map-frame .leaflet-layer.river-map-base-tiles im
   color: var(--text);
 }
 
-.theme-bar {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin: -0.35rem 0 0.75rem;
-  min-height: 2.5rem;
-}
-
-.theme-bar:has(.page-back) {
-  justify-content: space-between;
-}
-
-.theme-bar .page-back {
-  margin-bottom: 0;
-}
-
 .theme-toggle {
   position: relative;
   display: inline-flex;
@@ -1321,10 +1305,17 @@ html[data-theme="light"] .river-map-frame .leaflet-layer.river-map-base-tiles im
   color: var(--text-muted);
 }
 
+.built-by-credit {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
 .built-by-links {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.35rem;
   flex-shrink: 0;
 }
 
@@ -1347,6 +1338,27 @@ html[data-theme="light"] .river-map-frame .leaflet-layer.river-map-base-tiles im
 .built-by-links a:hover {
   color: var(--text);
   opacity: 1;
+}
+
+.built-by > .theme-toggle {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.built-by > .theme-toggle:hover,
+.built-by > .theme-toggle:focus-visible {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text);
+}
+
+.built-by > .theme-toggle .theme-toggle-icon svg {
+  width: 20px;
+  height: 20px;
 }
 
 .error-box {

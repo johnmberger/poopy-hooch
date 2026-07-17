@@ -1,5 +1,4 @@
 import { BuiltByFooter } from "@/components/shared/BuiltByFooter";
-import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { UsgsBacterialertLink } from "@/components/shared/UsgsBacterialertLink";
 import { HoochDashboard } from "@/components/dashboard/HoochDashboard";
 import { getBrandFromParams } from "@/lib/brand/server";
@@ -26,10 +25,6 @@ export default async function Home({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(getStructuredData(brand)) }}
       />
-
-      <div className="theme-bar">
-        <ThemeToggle />
-      </div>
 
       <article>
         <h1>{brand.siteName}</h1>

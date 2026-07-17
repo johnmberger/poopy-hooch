@@ -124,6 +124,7 @@ function FitBounds({ bounds }: { bounds: LatLngBounds }) {
       window.matchMedia("(max-width: 480px)").matches ? [56, 20] : [28, 28];
 
     const fit = () => {
+      map.invalidateSize({ animate: false });
       map.fitBounds(bounds, { padding: padding(), animate: false });
     };
 
@@ -142,6 +143,24 @@ function FitBounds({ bounds }: { bounds: LatLngBounds }) {
       window.removeEventListener("resize", onResize);
     };
   }, [map, bounds]);
+
+  return null;
+}
+
+/** Mobile Safari can leave filtered tile composited layers stuck after theme swaps. */
+function RedrawOnTheme({ theme }: { theme: string }) {
+  const map = useMap();
+
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      map.invalidateSize({ animate: false });
+      map.eachLayer((layer) => {
+        const tileLayer = layer as { redraw?: () => void };
+        tileLayer.redraw?.();
+      });
+    }, 60);
+    return () => window.clearTimeout(id);
+  }, [map, theme]);
 
   return null;
 }
@@ -214,9 +233,17 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
 
   const [tilesReady, setTilesReady] = useState(false);
 
+  useEffect(() => {
+    setTilesReady(false);
+  }, [theme]);
+
   return (
-    <div className={`river-map-viewport${tilesReady ? " is-ready" : ""}`}>
+    <div
+      className={`river-map-viewport${tilesReady ? " is-ready" : ""}`}
+      data-map-theme={theme}
+    >
       <MapContainer
+        key={theme}
         center={[33.93, -84.32]}
         zoom={11}
         scrollWheelZoom={false}
@@ -227,6 +254,7 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
       >
         <MapInteraction interactive={interactive} />
         <FitBounds bounds={bounds} />
+        <RedrawOnTheme theme={theme} />
         <PutInPane />
         {isLight ? (
           <TileLayer

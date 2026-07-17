@@ -1,5 +1,7 @@
 "use client";
 
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
+
 function GitHubIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -25,27 +27,30 @@ function trackOutbound(destination: "github" | "linkedin") {
 export function BuiltByFooter() {
   return (
     <footer className="built-by">
-      <span>built by John Berger</span>
-      <div className="built-by-links">
-        <a
-          href="https://github.com/johnmberger"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="John Berger on GitHub"
-          onClick={() => trackOutbound("github")}
-        >
-          <GitHubIcon />
-        </a>
-        <a
-          href="https://www.linkedin.com/in/johnmberger/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="John Berger on LinkedIn"
-          onClick={() => trackOutbound("linkedin")}
-        >
-          <LinkedInIcon />
-        </a>
+      <div className="built-by-credit">
+        <span>Made by John Berger</span>
+        <div className="built-by-links">
+          <a
+            href="https://github.com/johnmberger"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="John Berger on GitHub"
+            onClick={() => trackOutbound("github")}
+          >
+            <GitHubIcon />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/johnmberger/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="John Berger on LinkedIn"
+            onClick={() => trackOutbound("linkedin")}
+          >
+            <LinkedInIcon />
+          </a>
+        </div>
       </div>
+      <ThemeToggle />
     </footer>
   );
 }

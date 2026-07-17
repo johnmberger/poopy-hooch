@@ -21,6 +21,7 @@ function applyTheme(theme: Theme) {
   document
     .querySelector('meta[name="theme-color"]')
     ?.setAttribute("content", theme === "light" ? "#f3f4f6" : "#000000");
+  window.dispatchEvent(new CustomEvent("themechange", { detail: theme }));
 }
 
 function runThemeTransition(apply: () => void) {
