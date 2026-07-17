@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getBacteriaReport } from "@/lib/bacteria-cache";
-import type { BacteriaReport } from "@/lib/usgs";
+import { getBacteriaReport } from "@/lib/bacteria/cache";
+import type { BacteriaReport } from "@/lib/bacteria/usgs";
 
 const mockReport: BacteriaReport = {
   updatedAt: "2026-07-04T22:00:00-04:00",

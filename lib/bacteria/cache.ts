@@ -1,4 +1,4 @@
-import type { BacteriaReport } from "@/lib/usgs";
+import type { BacteriaReport } from "@/lib/bacteria/usgs";
 
 export const BACTERIA_API = "/api/bacteria";
 

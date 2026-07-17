@@ -1,4 +1,4 @@
-import { E_COLI_THRESHOLD } from "@/lib/usgs";
+import { E_COLI_THRESHOLD } from "@/lib/bacteria/usgs";
 
 export function HoochIntro() {
   return (

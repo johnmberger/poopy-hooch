@@ -1,5 +1,5 @@
-import { MapLoadingSkeleton } from "@/components/MapLoadingSkeleton";
-import { STATIONS } from "@/lib/usgs";
+import { MapLoadingSkeleton } from "@/components/map/MapLoadingSkeleton";
+import { STATIONS } from "@/lib/bacteria/usgs";
 
 export function HoochSkeleton() {
   return (

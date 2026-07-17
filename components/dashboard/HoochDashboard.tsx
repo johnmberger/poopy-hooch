@@ -4,17 +4,17 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { HistorySparkline } from "@/components/HistorySparkline";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { LearnMore } from "@/components/LearnMore";
-import { UsgsBacterialertLink } from "@/components/UsgsBacterialertLink";
-import { RiverMap } from "@/components/RiverMap";
-import { getBacteriaReport } from "@/lib/bacteria-cache";
-import { E_COLI_THRESHOLD, type BacteriaHistoryReport, type BacteriaReport } from "@/lib/usgs";
+import { HistorySparkline } from "@/components/dashboard/HistorySparkline";
+import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
+import { LearnMore } from "@/components/content/LearnMore";
+import { UsgsBacterialertLink } from "@/components/shared/UsgsBacterialertLink";
+import { RiverMap } from "@/components/map/RiverMap";
+import { getBacteriaReport } from "@/lib/bacteria/cache";
+import { E_COLI_THRESHOLD, type BacteriaHistoryReport, type BacteriaReport } from "@/lib/bacteria/usgs";
 import { HoochSkeleton } from "./HoochSkeleton";
 
 const FlyingPoop = dynamic(
-  () => import("@/components/FlyingPoop").then((mod) => ({ default: mod.FlyingPoop })),
+  () => import("@/components/shared/FlyingPoop").then((mod) => ({ default: mod.FlyingPoop })),
   { ssr: false },
 );
 

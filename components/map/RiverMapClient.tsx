@@ -7,17 +7,18 @@ import type { Feature, FeatureCollection, LineString } from "geojson";
 import type { TooltipOptions, LatLngBounds } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-import { defaultPutIns, PUT_IN_DETAIL_ZOOM, putInsForZoom } from "@/lib/put-ins";
-import { MapLoadingSkeleton } from "@/components/MapLoadingSkeleton";
-import { riverSegmentGradient, type StationReading } from "@/lib/usgs";
+import { defaultPutIns, PUT_IN_DETAIL_ZOOM, putInsForZoom } from "@/lib/map/put-ins";
+import { MapLoadingSkeleton } from "@/components/map/MapLoadingSkeleton";
+import { riverSegmentGradient, type StationReading } from "@/lib/bacteria/usgs";
+import riverData from "@/data/chattahoochee-river.json";
 
 const PUT_IN = "#93c5fd";
+const river = riverData as FeatureCollection;
 
 const TILE_BASE = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png";
 const TILE_LABELS = "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}.png";
 
 interface RiverMapClientProps {
-  river: FeatureCollection;
   stations: StationReading[];
   interactive: boolean;
 }
@@ -137,7 +138,9 @@ function FitBounds({ bounds }: { bounds: LatLngBounds }) {
   return null;
 }
 
-export default function RiverMapClient({ river, stations, interactive }: RiverMapClientProps) {
+export default function RiverMapClient({ stations, interactive }: RiverMapClientProps) {
+  const preferRetina =
+    typeof window !== "undefined" && !window.matchMedia("(pointer: coarse)").matches;
   const coloredSegments = useMemo(
     () =>
       river.features
@@ -211,13 +214,17 @@ export default function RiverMapClient({ river, stations, interactive }: RiverMa
         <PutInPane />
         <TileLayer
           url={TILE_BASE}
-          detectRetina
+          detectRetina={preferRetina}
           className="river-map-base-tiles"
           eventHandlers={{
             load: () => setTilesReady(true),
           }}
         />
-        <TileLayer url={TILE_LABELS} detectRetina className="river-map-label-tiles" />
+        <TileLayer
+          url={TILE_LABELS}
+          detectRetina={preferRetina}
+          className="river-map-label-tiles"
+        />
 
       {outline && (
         <GeoJSON

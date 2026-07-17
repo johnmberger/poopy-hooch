@@ -1,6 +1,12 @@
 import { unstable_cache } from "next/cache";
 
-import { fetchBacteriaHistory, fetchBacteriaReport, type BacteriaHistoryReport, type HistoryPeriod } from "@/lib/usgs";
+import {
+  downsampleHistoryReport,
+  fetchBacteriaHistory,
+  fetchBacteriaReport,
+  type BacteriaHistoryReport,
+  type HistoryPeriod,
+} from "@/lib/bacteria/usgs";
 
 const getCachedReport = unstable_cache(fetchBacteriaReport, ["bacteria-report"], {
   revalidate: 3600,
@@ -28,4 +34,12 @@ export async function getServerBacteriaHistory(
   } catch {
     return null;
   }
+}
+
+/** Full week history, trimmed for the homepage sparkline payload. */
+export async function getServerBacteriaHistoryPreview(
+  period: HistoryPeriod = "P7D",
+): Promise<BacteriaHistoryReport | null> {
+  const history = await getServerBacteriaHistory(period);
+  return history ? downsampleHistoryReport(history) : null;
 }

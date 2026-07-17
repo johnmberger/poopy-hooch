@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { DATA_REVALIDATE_SECONDS, JSON_CACHE_CONTROL } from "@/lib/cache-config";
+import { DATA_REVALIDATE_SECONDS, JSON_CACHE_CONTROL } from "@/lib/bacteria/cache-config";
 
 describe("cache-config", () => {
   it("uses a one-hour TTL for JSON responses", () => {

@@ -240,6 +240,8 @@ export interface BacteriaHistoryReport {
 }
 
 export const MAX_HISTORY_CHART_POINTS = 400;
+/** Enough points for an 88px sparkline without shipping a full week of IV data. */
+export const MAX_HISTORY_SPARKLINE_POINTS = 32;
 
 function parseEcoliHistory(entry: TimeSeriesEntry): HistoryPoint[] {
   for (const valuesBlock of entry.values) {
@@ -269,6 +271,19 @@ export function downsampleHistory(points: HistoryPoint[], maxPoints: number): Hi
   }
 
   return result;
+}
+
+export function downsampleHistoryReport(
+  report: BacteriaHistoryReport,
+  maxPoints: number = MAX_HISTORY_SPARKLINE_POINTS,
+): BacteriaHistoryReport {
+  return {
+    ...report,
+    stations: report.stations.map((station) => ({
+      ...station,
+      points: downsampleHistory(station.points, maxPoints),
+    })),
+  };
 }
 
 export function usgsHistoryUrl(period: HistoryPeriod): string {

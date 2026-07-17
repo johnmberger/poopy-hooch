@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getBacteriaHistory,
   seedBacteriaHistory,
-} from "@/lib/bacteria-history-cache";
-import type { BacteriaHistoryReport } from "@/lib/usgs";
+} from "@/lib/bacteria/history-cache";
+import type { BacteriaHistoryReport } from "@/lib/bacteria/usgs";
 
 const mockHistory = (period: BacteriaHistoryReport["period"]): BacteriaHistoryReport => ({
   period,

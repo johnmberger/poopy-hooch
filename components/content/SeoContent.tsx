@@ -1,6 +1,6 @@
-import { E_COLI_THRESHOLD, STATIONS } from "@/lib/usgs";
+import { E_COLI_THRESHOLD, STATIONS } from "@/lib/bacteria/usgs";
 import { faqItems } from "@/lib/seo";
-import { linkifyBacterialert, UsgsBacterialertLink } from "@/components/UsgsBacterialertLink";
+import { linkifyBacterialert, UsgsBacterialertLink } from "@/components/shared/UsgsBacterialertLink";
 
 export function SeoContent() {
   return (

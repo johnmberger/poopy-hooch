@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { AnalyticsDeferred } from "@/components/AnalyticsDeferred";
-import { getRequestBrand } from "@/lib/brand-server";
+import { AnalyticsDeferred } from "@/components/shared/AnalyticsDeferred";
+import { getRequestBrand } from "@/lib/brand/server";
 import { siteKeywords } from "@/lib/seo";
 import "./globals.css";
 

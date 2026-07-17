@@ -1,7 +1,5 @@
 "use client";
 
-import { track } from "@vercel/analytics";
-
 function GitHubIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -18,6 +16,12 @@ function LinkedInIcon() {
   );
 }
 
+function trackOutbound(destination: "github" | "linkedin") {
+  void import("@vercel/analytics").then(({ track }) => {
+    track("outbound_profile_click", { destination });
+  });
+}
+
 export function BuiltByFooter() {
   return (
     <footer className="built-by">
@@ -28,7 +32,7 @@ export function BuiltByFooter() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="John Berger on GitHub"
-          onClick={() => track("outbound_profile_click", { destination: "github" })}
+          onClick={() => trackOutbound("github")}
         >
           <GitHubIcon />
         </a>
@@ -37,7 +41,7 @@ export function BuiltByFooter() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="John Berger on LinkedIn"
-          onClick={() => track("outbound_profile_click", { destination: "linkedin" })}
+          onClick={() => trackOutbound("linkedin")}
         >
           <LinkedInIcon />
         </a>

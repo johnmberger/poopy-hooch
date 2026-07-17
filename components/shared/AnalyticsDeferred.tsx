@@ -8,6 +8,11 @@ const Analytics = dynamic(
   { ssr: false },
 );
 
+const SpeedInsights = dynamic(
+  () => import("@vercel/speed-insights/next").then((mod) => mod.SpeedInsights),
+  { ssr: false },
+);
+
 export function AnalyticsDeferred() {
   const [ready, setReady] = useState(false);
 
@@ -23,5 +28,12 @@ export function AnalyticsDeferred() {
     return () => clearTimeout(id);
   }, []);
 
-  return ready ? <Analytics /> : null;
+  if (!ready) return null;
+
+  return (
+    <>
+      <Analytics />
+      <SpeedInsights />
+    </>
+  );
 }

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { BuiltByFooter } from "@/components/BuiltByFooter";
-import { EcoliTimeline } from "@/components/EcoliTimeline";
-import { UsgsBacterialertLink } from "@/components/UsgsBacterialertLink";
-import { getRequestBrand } from "@/lib/brand-server";
-import { getServerBacteriaHistory } from "@/lib/bacteria-server";
+import { BuiltByFooter } from "@/components/shared/BuiltByFooter";
+import { EcoliTimeline } from "@/components/history/EcoliTimeline";
+import { UsgsBacterialertLink } from "@/components/shared/UsgsBacterialertLink";
+import { getRequestBrand } from "@/lib/brand/server";
+import { getServerBacteriaHistory } from "@/lib/bacteria/server";
 
 export const revalidate = 3600;
 

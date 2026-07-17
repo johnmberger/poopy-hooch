@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { snapToRiverLine } from "@/lib/snap-to-river";
+import { snapToRiverLine } from "@/lib/map/snap-to-river";
 
 describe("snapToRiverLine", () => {
   const line: [number, number][] = [

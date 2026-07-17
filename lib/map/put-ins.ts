@@ -2,8 +2,8 @@
 import type { FeatureCollection, LineString } from "geojson";
 
 import riverData from "@/data/chattahoochee-river.json";
-import { snapToRiverLine } from "@/lib/snap-to-river";
-import { STATIONS } from "@/lib/usgs";
+import { snapToRiverLine } from "@/lib/map/snap-to-river";
+import { STATIONS } from "@/lib/bacteria/usgs";
 
 export type LabelDirection = "left" | "right" | "top" | "bottom";
 

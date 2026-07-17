@@ -4,14 +4,17 @@ import {
   E_COLI_THRESHOLD,
   buildSummary,
   downsampleHistory,
+  downsampleHistoryReport,
+  MAX_HISTORY_SPARKLINE_POINTS,
   parseUsgsHistoryResponse,
   parseUsgsResponse,
   blendRiverColors,
   riverSegmentGradient,
   riskFromEcoli,
+  type BacteriaHistoryReport,
   type StationReading,
   type UsgsIvResponse,
-} from "@/lib/usgs";
+} from "@/lib/bacteria/usgs";
 
 function station(overrides: Partial<StationReading> & Pick<StationReading, "name" | "risk">): StationReading {
   return {
@@ -206,6 +209,29 @@ describe("downsampleHistory", () => {
 
     expect(downsampled).toHaveLength(2);
     expect(downsampled.some((point) => point.eColi === 500)).toBe(true);
+  });
+});
+
+describe("downsampleHistoryReport", () => {
+  it("trims each station to the sparkline point budget", () => {
+    const report: BacteriaHistoryReport = {
+      period: "P7D",
+      stations: [
+        {
+          id: "02335000",
+          name: "Medlock Bridge",
+          points: Array.from({ length: 100 }, (_, index) => ({
+            dateTime: `2026-07-01T${String(index % 24).padStart(2, "0")}:00:00-04:00`,
+            eColi: index,
+          })),
+        },
+      ],
+    };
+
+    const preview = downsampleHistoryReport(report);
+
+    expect(preview.stations[0]!.points.length).toBeLessThanOrEqual(MAX_HISTORY_SPARKLINE_POINTS);
+    expect(preview.stations[0]!.points.length).toBeGreaterThan(0);
   });
 });
 

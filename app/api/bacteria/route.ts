@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { getServerBacteriaReport } from "@/lib/bacteria-server";
-import { JSON_CACHE_CONTROL } from "@/lib/cache-config";
+import { getServerBacteriaReport } from "@/lib/bacteria/server";
+import { JSON_CACHE_CONTROL } from "@/lib/bacteria/cache-config";
 
 export const revalidate = 3600;
 

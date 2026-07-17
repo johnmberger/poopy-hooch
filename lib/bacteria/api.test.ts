@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { JSON_CACHE_CONTROL } from "@/lib/cache-config";
+import { JSON_CACHE_CONTROL } from "@/lib/bacteria/cache-config";
 
 const mockGetReport = vi.fn();
 const mockGetHistory = vi.fn();
 
-vi.mock("@/lib/bacteria-server", () => ({
+vi.mock("@/lib/bacteria/server", () => ({
   getServerBacteriaReport: (...args: Parameters<typeof mockGetReport>) => mockGetReport(...args),
   getServerBacteriaHistory: (...args: Parameters<typeof mockGetHistory>) => mockGetHistory(...args),
 }));

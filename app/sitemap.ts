@@ -1,18 +1,18 @@
 import type { MetadataRoute } from "next";
 
-import { siteUrl } from "@/lib/seo";
+import { getRequestBrand } from "@/lib/brand/server";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const brand = await getRequestBrand();
+
   return [
     {
-      url: siteUrl,
-      lastModified: new Date(),
+      url: brand.siteUrl,
       changeFrequency: "hourly",
       priority: 1,
     },
     {
-      url: `${siteUrl}/history`,
-      lastModified: new Date(),
+      url: `${brand.siteUrl}/history`,
       changeFrequency: "hourly",
       priority: 0.8,
     },

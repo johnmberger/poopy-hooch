@@ -2,14 +2,10 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
-import type { FeatureCollection } from "geojson";
 
-import { MapLoadingSkeleton } from "@/components/MapLoadingSkeleton";
-import type { StationReading } from "@/lib/usgs";
-import { MapPreconnect } from "@/components/MapPreconnect";
-import riverData from "@/data/chattahoochee-river.json";
-
-const river = riverData as FeatureCollection;
+import { MapLoadingSkeleton } from "@/components/map/MapLoadingSkeleton";
+import type { StationReading } from "@/lib/bacteria/usgs";
+import { MapPreconnect } from "@/components/map/MapPreconnect";
 
 const RiverMapClient = dynamic(() => import("./RiverMapClient"), {
   ssr: false,
@@ -71,11 +67,7 @@ export function RiverMap({ stations }: RiverMapProps) {
       >
         {shouldLoadMap && <MapPreconnect />}
         {shouldLoadMap ? (
-          <RiverMapClient
-            river={river}
-            stations={stations}
-            interactive={mapInteractive}
-          />
+          <RiverMapClient stations={stations} interactive={mapInteractive} />
         ) : (
           <MapLoadingSkeleton />
         )}

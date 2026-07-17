@@ -3,7 +3,7 @@ import {
   STATION_CHART_COLORS,
   type HistoryPoint,
   type StationHistory,
-} from "@/lib/usgs";
+} from "@/lib/bacteria/usgs";
 
 const WIDTH = 88;
 const HEIGHT = 32;

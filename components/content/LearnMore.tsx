@@ -1,5 +1,5 @@
-import { HoochIntro } from "@/components/HoochIntro";
-import { SeoContent } from "@/components/SeoContent";
+import { HoochIntro } from "@/components/content/HoochIntro";
+import { SeoContent } from "@/components/content/SeoContent";
 
 export function LearnMore() {
   return (

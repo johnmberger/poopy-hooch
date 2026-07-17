@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
-import { getBacteriaHistory, seedBacteriaHistory } from "@/lib/bacteria-history-cache";
-import { UsgsBacterialertLink } from "@/components/UsgsBacterialertLink";
+import { getBacteriaHistory, seedBacteriaHistory } from "@/lib/bacteria/history-cache";
+import { UsgsBacterialertLink } from "@/components/shared/UsgsBacterialertLink";
 import {
   E_COLI_THRESHOLD,
   HISTORY_PERIODS,
@@ -13,7 +13,7 @@ import {
   type HistoryPeriod,
   type HistoryPoint,
   type StationHistory,
-} from "@/lib/usgs";
+} from "@/lib/bacteria/usgs";
 
 const CHART_WIDTH = 640;
 const CHART_HEIGHT = 200;

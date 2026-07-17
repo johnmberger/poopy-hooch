@@ -1,8 +1,8 @@
-import { BuiltByFooter } from "@/components/BuiltByFooter";
-import { UsgsBacterialertLink } from "@/components/UsgsBacterialertLink";
-import { HoochDashboard } from "@/components/HoochDashboard";
-import { getRequestBrand } from "@/lib/brand-server";
-import { getServerBacteriaHistory, getServerBacteriaReport } from "@/lib/bacteria-server";
+import { BuiltByFooter } from "@/components/shared/BuiltByFooter";
+import { UsgsBacterialertLink } from "@/components/shared/UsgsBacterialertLink";
+import { HoochDashboard } from "@/components/dashboard/HoochDashboard";
+import { getRequestBrand } from "@/lib/brand/server";
+import { getServerBacteriaHistoryPreview, getServerBacteriaReport } from "@/lib/bacteria/server";
 import { getStructuredData } from "@/lib/seo";
 
 export const revalidate = 3600;
@@ -16,7 +16,7 @@ export default async function Home({
   const brand = await getRequestBrand();
   const [initialReport, historyPreview] = await Promise.all([
     getServerBacteriaReport(),
-    getServerBacteriaHistory("P7D"),
+    getServerBacteriaHistoryPreview("P7D"),
   ]);
   const forcePoop = process.env.NODE_ENV === "development" && poop === "1";
 

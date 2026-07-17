@@ -5,7 +5,7 @@ import {
   PUT_INS,
   defaultPutIns,
   putInsForZoom,
-} from "@/lib/put-ins";
+} from "@/lib/map/put-ins";
 
 describe("putInsForZoom", () => {
   it("shows default put-ins below the detail zoom level", () => {

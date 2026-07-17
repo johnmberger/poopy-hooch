@@ -1,6 +1,6 @@
 import type { Brand } from "@/lib/brand";
 import { brands } from "@/lib/brand";
-import { E_COLI_THRESHOLD } from "@/lib/usgs";
+import { E_COLI_THRESHOLD } from "@/lib/bacteria/usgs";
 
 export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? brands.isthehoochpoopy.siteUrl;
 export const siteName = brands.isthehoochpoopy.siteName;

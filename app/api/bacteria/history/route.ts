@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { getServerBacteriaHistory } from "@/lib/bacteria-server";
-import { JSON_CACHE_CONTROL } from "@/lib/cache-config";
-import type { HistoryPeriod } from "@/lib/usgs";
+import { getServerBacteriaHistory } from "@/lib/bacteria/server";
+import { JSON_CACHE_CONTROL } from "@/lib/bacteria/cache-config";
+import type { HistoryPeriod } from "@/lib/bacteria/usgs";
 
 export const revalidate = 3600;
 

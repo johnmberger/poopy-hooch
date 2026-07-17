@@ -1,6 +1,6 @@
 import { Fragment, type ReactNode } from "react";
 
-import { USGS_BACTERIA_URL } from "@/lib/usgs";
+import { USGS_BACTERIA_URL } from "@/lib/bacteria/usgs";
 
 export function UsgsBacterialertLink({ children = "USGS BacteriALERT" }: { children?: ReactNode }) {
   return (

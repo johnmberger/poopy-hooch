@@ -1,4 +1,4 @@
-import type { BacteriaHistoryReport, HistoryPeriod } from "@/lib/usgs";
+import type { BacteriaHistoryReport, HistoryPeriod } from "@/lib/bacteria/usgs";
 
 export const BACTERIA_HISTORY_API = "/api/bacteria/history";
 

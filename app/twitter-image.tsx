@@ -1,5 +1,5 @@
-import { getRequestBrand } from "@/lib/brand-server";
-import { generateOgImage, ogImageSize } from "@/lib/og-image";
+import { getRequestBrand } from "@/lib/brand/server";
+import { generateOgImage, ogImageSize } from "@/lib/seo/og-image";
 
 export const size = ogImageSize;
 export const contentType = "image/png";
