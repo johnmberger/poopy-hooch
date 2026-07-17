@@ -11,6 +11,7 @@ import {
   blendRiverColors,
   riverSegmentGradient,
   riskFromEcoli,
+  RIVER_COLORS_LIGHT,
   type BacteriaHistoryReport,
   type StationReading,
   type UsgsIvResponse,
@@ -143,6 +144,11 @@ describe("blendRiverColors", () => {
     const mid = blendRiverColors("low", "high", 0.5);
     expect(mid).not.toBe("#4ade80");
     expect(mid).not.toBe("#f87171");
+  });
+
+  it("uses the light palette when provided", () => {
+    expect(blendRiverColors("low", "low", 0, RIVER_COLORS_LIGHT)).toBe("#16a34a");
+    expect(blendRiverColors("high", "high", 1, RIVER_COLORS_LIGHT)).toBe("#dc2626");
   });
 });
 

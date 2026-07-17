@@ -97,7 +97,17 @@ export function HoochDashboard({
         <p className="verdict-updated">Updated {formatObservedAt(report.updatedAt)}</p>
       </section>
 
-      <ErrorBoundary fallback={<p className="meta">Map failed to load. Station readings below still work.</p>}>
+      <ErrorBoundary
+        fallback={
+          <figure className="river-map">
+            <figcaption className="stations-heading">River map</figcaption>
+            <div className="map-error" role="status">
+              <p>Map failed to load.</p>
+              <p>Station readings below still work.</p>
+            </div>
+          </figure>
+        }
+      >
         <RiverMap stations={report.stations} />
       </ErrorBoundary>
 

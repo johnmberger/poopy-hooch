@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { BuiltByFooter } from "@/components/shared/BuiltByFooter";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { EcoliTimeline } from "@/components/history/EcoliTimeline";
 import { UsgsBacterialertLink } from "@/components/shared/UsgsBacterialertLink";
 import { getBrandFromParams } from "@/lib/brand/server";
@@ -38,11 +39,14 @@ export default async function HistoryPage() {
 
   return (
     <main>
-      <article>
+      <div className="theme-bar">
         <p className="page-back">
           <Link href="/">← Today&apos;s check</Link>
         </p>
+        <ThemeToggle />
+      </div>
 
+      <article>
         <h1>Recent levels</h1>
         <p className="title-helper">Chattahoochee River E. coli history · Atlanta, Georgia</p>
 

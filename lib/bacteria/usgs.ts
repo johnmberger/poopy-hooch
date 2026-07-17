@@ -111,6 +111,24 @@ export function riskFromEcoli(eColi: number): RiskLevel {
 
 export const RIVER_CLEAN_COLOR = "#4ade80";
 export const RIVER_POOPY_COLOR = "#f87171";
+export const RIVER_CLEAN_COLOR_LIGHT = "#16a34a";
+export const RIVER_POOPY_COLOR_LIGHT = "#dc2626";
+
+export type RiverColorPalette = {
+  clean: string;
+  poopy: string;
+};
+
+export const RIVER_COLORS_DARK: RiverColorPalette = {
+  clean: RIVER_CLEAN_COLOR,
+  poopy: RIVER_POOPY_COLOR,
+};
+
+export const RIVER_COLORS_LIGHT: RiverColorPalette = {
+  clean: RIVER_CLEAN_COLOR_LIGHT,
+  poopy: RIVER_POOPY_COLOR_LIGHT,
+};
+
 const RIVER_GRADIENT_STEPS = 20;
 
 export interface RiverGradientPart {
@@ -131,10 +149,15 @@ function rgbToHex([r, g, b]: [number, number, number]): string {
   return `#${[r, g, b].map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
 }
 
-export function blendRiverColors(from: RiskLevel, to: RiskLevel, amount: number): string {
+export function blendRiverColors(
+  from: RiskLevel,
+  to: RiskLevel,
+  amount: number,
+  colors: RiverColorPalette = RIVER_COLORS_DARK,
+): string {
   const clamped = Math.min(Math.max(amount, 0), 1);
-  const fromRgb = hexToRgb(from === "low" ? RIVER_CLEAN_COLOR : RIVER_POOPY_COLOR);
-  const toRgb = hexToRgb(to === "low" ? RIVER_CLEAN_COLOR : RIVER_POOPY_COLOR);
+  const fromRgb = hexToRgb(from === "low" ? colors.clean : colors.poopy);
+  const toRgb = hexToRgb(to === "low" ? colors.clean : colors.poopy);
   return rgbToHex([
     Math.round(fromRgb[0] + (toRgb[0] - fromRgb[0]) * clamped),
     Math.round(fromRgb[1] + (toRgb[1] - fromRgb[1]) * clamped),
@@ -147,11 +170,12 @@ export function riverSegmentGradient(
   upstream: RiskLevel,
   downstream: RiskLevel,
   coordinates: [number, number][],
+  colors: RiverColorPalette = RIVER_COLORS_DARK,
 ): RiverGradientPart[] {
   if (coordinates.length < 2) return [];
 
   if (upstream === downstream) {
-    return [{ coordinates, color: blendRiverColors(upstream, downstream, 0) }];
+    return [{ coordinates, color: blendRiverColors(upstream, downstream, 0, colors) }];
   }
 
   const steps = Math.min(RIVER_GRADIENT_STEPS, coordinates.length - 1);
@@ -167,11 +191,13 @@ export function riverSegmentGradient(
     const amount = steps === 1 ? 0.5 : step / (steps - 1);
     parts.push({
       coordinates: coordinates.slice(startIdx, endIdx + 1),
-      color: blendRiverColors(upstream, downstream, amount),
+      color: blendRiverColors(upstream, downstream, amount, colors),
     });
   }
 
-  return parts.length > 0 ? parts : [{ coordinates, color: blendRiverColors(upstream, downstream, 0.5) }];
+  return parts.length > 0
+    ? parts
+    : [{ coordinates, color: blendRiverColors(upstream, downstream, 0.5, colors) }];
 }
 
 export function buildSummary(stations: StationReading[]): BacteriaReport["summary"] {
@@ -183,7 +209,7 @@ export function buildSummary(stations: StationReading[]): BacteriaReport["summar
   if (safeCount === totalCount) {
     return {
       headline: "Not poopy at all",
-      message: "You're good to go — the sewers are behaving today.",
+      message: "You're good to go - the sewers are behaving today.",
       overallSafe: true,
       safeCount,
       totalCount,

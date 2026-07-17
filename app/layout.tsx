@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 
 import { AnalyticsDeferred } from "@/components/shared/AnalyticsDeferred";
+import { themeInitScript } from "@/lib/theme-init";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -34,8 +35,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="dark" suppressHydrationWarning>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         {children}
         <AnalyticsDeferred />
       </body>

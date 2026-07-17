@@ -1,8 +1,21 @@
 :root {
+  color-scheme: dark;
   --bg: #000;
   --text: #fff;
   --text-muted: #999;
   --border: rgba(255, 255, 255, 0.22);
+  --surface: #111;
+  --hover-border: rgba(255, 255, 255, 0.45);
+  --hover-bg: rgba(255, 255, 255, 0.06);
+  --tooltip-bg: rgba(0, 0, 0, 0.94);
+  --chart-grid: rgba(255, 255, 255, 0.08);
+  --chart-crosshair: rgba(255, 255, 255, 0.35);
+  --inverted-muted: rgba(0, 0, 0, 0.55);
+  --unsafe-glow: 0 4px 24px rgba(255, 255, 255, 0.06);
+  --map-chrome: #000;
+  --map-overlay: rgba(0, 0, 0, 0.82);
+  --map-label-bg: #000;
+  --map-label-fg: #fff;
   --radius: 6px;
   --radius-sm: 4px;
   --clean: #4ade80;
@@ -11,6 +24,55 @@
   --poopy-bg: rgba(248, 113, 113, 0.1);
   --mixed: #fbbf24;
   --mixed-bg: rgba(251, 191, 36, 0.08);
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f3f4f6;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --border: rgba(17, 24, 39, 0.14);
+  --surface: #e5e7eb;
+  --hover-border: rgba(17, 24, 39, 0.35);
+  --hover-bg: rgba(17, 24, 39, 0.05);
+  --tooltip-bg: rgba(255, 255, 255, 0.96);
+  --chart-grid: rgba(17, 24, 39, 0.1);
+  --chart-crosshair: rgba(17, 24, 39, 0.3);
+  --inverted-muted: rgba(255, 255, 255, 0.55);
+  --unsafe-glow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  --map-chrome: #e8eaed;
+  --map-overlay: rgba(255, 255, 255, 0.92);
+  --map-label-bg: #fff;
+  --map-label-fg: #111827;
+  --clean: #16a34a;
+  --clean-bg: rgba(22, 163, 74, 0.12);
+  --poopy: #dc2626;
+  --poopy-bg: rgba(220, 38, 38, 0.1);
+  --mixed: #d97706;
+  --mixed-bg: rgba(217, 119, 6, 0.12);
+}
+
+/* Brief window while toggling theme — avoid slowing everyday hover animations */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    fill 0.25s ease,
+    stroke 0.25s ease,
+    box-shadow 0.25s ease,
+    outline-color 0.25s ease !important;
+  transition-delay: 0s !important;
+}
+
+html.theme-transition .leaflet-container,
+html.theme-transition .leaflet-container *,
+html.theme-transition .leaflet-container *::before,
+html.theme-transition .leaflet-container *::after {
+  transition: none !important;
 }
 
 * {
@@ -166,12 +228,16 @@ h1 {
 
 .station-list-more:has(
   .station-list-link:hover,
-  .station-list-link:focus-visible,
-  .learn-more-toggle:hover,
-  .learn-more-toggle:focus-visible
+  .station-list-link:focus-visible
 ) {
-  border-color: rgba(255, 255, 255, 0.45);
-  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--hover-border);
+  background: var(--hover-bg);
+}
+
+/* Collapsed learn-more: highlight the whole card border. Open: only the toggle row. */
+.station-list-more:has(.learn-more:not([open]) > .learn-more-toggle:hover),
+.station-list-more:has(.learn-more:not([open]) > .learn-more-toggle:focus-visible) {
+  border-color: var(--hover-border);
 }
 
 .station-list-link,
@@ -194,6 +260,20 @@ h1 {
 .learn-more-toggle:hover,
 .learn-more-toggle:focus-visible {
   outline: none;
+}
+
+.learn-more-toggle {
+  border-radius: inherit;
+  transition: background-color 0.15s ease;
+}
+
+.learn-more-toggle:hover,
+.learn-more-toggle:focus-visible {
+  background: var(--hover-bg);
+}
+
+.learn-more[open] > .learn-more-toggle {
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 
 .station-list-link:hover .station-section,
@@ -336,7 +416,7 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #111;
+  background: var(--surface);
   border-radius: inherit;
   animation: pulse 1.4s ease-in-out infinite;
   overflow: hidden;
@@ -351,6 +431,10 @@ a:hover {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='100' viewBox='0 0 200 100'%3E%3Cpath d='M0 50 C50 35 150 65 200 50' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3Cpath d='M0 70 C50 55 150 85 200 70' fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.6'/%3E%3C/svg%3E");
   background-size: 200px 100px;
   background-repeat: repeat;
+}
+
+html[data-theme="light"] .map-loading-skeleton::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='100' viewBox='0 0 200 100'%3E%3Cpath d='M0 50 C50 35 150 65 200 50' fill='none' stroke='%23111827' stroke-width='1.5'/%3E%3Cpath d='M0 70 C50 55 150 85 200 70' fill='none' stroke='%23111827' stroke-width='1' opacity='0.6'/%3E%3C/svg%3E");
 }
 
 .map-loading-skeleton-label {
@@ -564,7 +648,7 @@ a:hover {
 .verdict.unsafe {
   background: var(--text);
   color: var(--bg);
-  box-shadow: 0 4px 24px rgba(255, 255, 255, 0.06);
+  box-shadow: var(--unsafe-glow);
 }
 
 .verdict.mixed {
@@ -607,7 +691,7 @@ a:hover {
 }
 
 .verdict.unsafe .verdict-context {
-  color: rgba(0, 0, 0, 0.55);
+  color: var(--inverted-muted);
 }
 
 .verdict-updated {
@@ -631,7 +715,7 @@ a:hover {
 }
 
 .verdict.unsafe .verdict-updated {
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--inverted-muted);
 }
 
 .section-note {
@@ -662,13 +746,34 @@ a:hover {
   margin-bottom: 1.5rem;
 }
 
+.map-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  height: 340px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  text-align: center;
+  padding: 1.25rem;
+}
+
+.map-error p {
+  margin: 0;
+}
+
 .river-map-frame {
   position: relative;
   height: 340px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  background: #000;
+  background: var(--map-chrome);
 }
 
 .river-map-frame:not(.is-interactive) .river-map-container {
@@ -683,7 +788,7 @@ a:hover {
   transform: translateX(-50%);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: rgba(0, 0, 0, 0.82);
+  background: var(--map-overlay);
   color: var(--text-muted);
   font: inherit;
   font-size: 0.7rem;
@@ -708,7 +813,7 @@ a:hover {
 .river-map-container {
   height: 100%;
   width: 100%;
-  background: #000;
+  background: var(--map-chrome);
 }
 
 .river-map-viewport {
@@ -719,30 +824,36 @@ a:hover {
 
 /* Leaflet defaults (#ddd tiles) load after globals — override with higher specificity */
 .river-map-frame .leaflet-container {
-  background: #000;
+  background: var(--map-chrome);
 }
 
 .river-map-frame .leaflet-tile-pane,
 .river-map-frame .leaflet-tile-container,
 .river-map-frame img.leaflet-tile {
-  background: #000;
+  background: var(--map-chrome);
 }
 
-.river-map-frame .leaflet-layer.river-map-base-tiles img.leaflet-tile {
+/* Dark mode: crush Voyager into a near-black basemap, then lighten labels on top */
+html[data-theme="dark"] .river-map-frame .leaflet-layer.river-map-base-tiles img.leaflet-tile {
   filter: brightness(0.34) contrast(1.75) saturate(0.22) grayscale(0.15);
 }
 
-.river-map-frame .leaflet-layer.river-map-label-tiles {
+html[data-theme="dark"] .river-map-frame .leaflet-layer.river-map-label-tiles {
   mix-blend-mode: lighten;
 }
 
-.river-map-frame .leaflet-layer.river-map-label-tiles img.leaflet-tile {
+html[data-theme="dark"] .river-map-frame .leaflet-layer.river-map-label-tiles img.leaflet-tile {
   filter: brightness(1.3) contrast(1.1);
 }
 
+/* Light mode: natural Voyager streets + labels, no filter stack */
+html[data-theme="light"] .river-map-frame .leaflet-layer.river-map-base-tiles img.leaflet-tile {
+  filter: none;
+}
+
 .leaflet-tooltip.map-label {
-  background: #000;
-  color: #fff;
+  background: var(--map-label-bg);
+  color: var(--map-label-fg);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   box-shadow: none;
@@ -775,8 +886,8 @@ a:hover {
 }
 
 .leaflet-popup.map-popup .leaflet-popup-content-wrapper {
-  background: #000;
-  color: #fff;
+  background: var(--map-label-bg);
+  color: var(--map-label-fg);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   box-shadow: none;
@@ -789,7 +900,7 @@ a:hover {
 }
 
 .leaflet-popup.map-popup .leaflet-popup-tip {
-  background: #000;
+  background: var(--map-label-bg);
   box-shadow: none;
 }
 
@@ -940,8 +1051,8 @@ a:hover {
 
 .timeline-range-btn.is-active {
   color: var(--text);
-  border-color: rgba(255, 255, 255, 0.45);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--hover-border);
+  background: var(--hover-bg);
 }
 
 .timeline-panel {
@@ -963,7 +1074,7 @@ a:hover {
   max-width: calc(100% - 1rem);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: rgba(0, 0, 0, 0.94);
+  background: var(--tooltip-bg);
   padding: 0.55rem 0.65rem;
   pointer-events: none;
 }
@@ -1020,7 +1131,7 @@ a:hover {
 }
 
 .timeline-grid-line {
-  stroke: rgba(255, 255, 255, 0.08);
+  stroke: var(--chart-grid);
   stroke-width: 1;
 }
 
@@ -1043,7 +1154,7 @@ a:hover {
 }
 
 .timeline-crosshair {
-  stroke: rgba(255, 255, 255, 0.35);
+  stroke: var(--chart-crosshair);
   stroke-width: 1;
   pointer-events: none;
 }
@@ -1090,7 +1201,7 @@ a:hover {
 .timeline-skeleton {
   height: 200px;
   border-radius: var(--radius-sm);
-  background: #111;
+  background: var(--surface);
   animation: pulse 1.4s ease-in-out infinite;
 }
 
@@ -1113,6 +1224,89 @@ a:hover {
 
 .meta a:hover {
   color: var(--text);
+}
+
+.theme-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin: -0.35rem 0 0.75rem;
+  min-height: 2.5rem;
+}
+
+.theme-bar:has(.page-back) {
+  justify-content: space-between;
+}
+
+.theme-bar .page-back {
+  margin-bottom: 0;
+}
+
+.theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+  color: var(--text);
+  border-color: var(--hover-border);
+  background: var(--hover-bg);
+  outline: none;
+}
+
+.theme-toggle-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease;
+}
+
+.theme-toggle-icon svg {
+  display: block;
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.theme-toggle[data-icon="dark"] .theme-toggle-sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.theme-toggle[data-icon="dark"] .theme-toggle-moon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.4);
+  pointer-events: none;
+}
+
+.theme-toggle[data-icon="light"] .theme-toggle-sun {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.4);
+  pointer-events: none;
+}
+
+.theme-toggle[data-icon="light"] .theme-toggle-moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle-icon {
+    transition: none;
+  }
 }
 
 .built-by {
@@ -1240,7 +1434,8 @@ a:hover {
   }
 
   .river-map-frame,
-  .skeleton-map {
+  .skeleton-map,
+  .map-error {
     height: 280px;
   }
 
