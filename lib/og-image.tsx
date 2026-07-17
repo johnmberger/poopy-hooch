@@ -1,9 +1,11 @@
 import { ImageResponse } from "next/og";
 
-export const ogImageSize = { width: 1200, height: 630 };
-export const ogImageAlt = "Is the Hooch poopy?";
+import type { Brand } from "@/lib/brand";
+import { brands } from "@/lib/brand";
 
-export function generateOgImage() {
+export const ogImageSize = { width: 1200, height: 630 };
+
+export function generateOgImage(brand: Brand = brands.isthehoochpoopy) {
   return new ImageResponse(
     (
       <div
@@ -12,6 +14,7 @@ export function generateOgImage() {
           width: "100%",
           height: "100%",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -19,7 +22,7 @@ export function generateOgImage() {
         <div
           style={{
             color: "#fff",
-            fontSize: 72,
+            fontSize: brand.ogSubtitle ? 68 : 72,
             fontWeight: 800,
             letterSpacing: "-0.03em",
             textAlign: "center",
@@ -27,8 +30,24 @@ export function generateOgImage() {
             lineHeight: 1.1,
           }}
         >
-          Is the Hooch poopy?
+          {brand.ogTitle}
         </div>
+        {brand.ogSubtitle ? (
+          <div
+            style={{
+              color: "#999",
+              fontSize: 34,
+              fontWeight: 500,
+              letterSpacing: "0.01em",
+              textAlign: "center",
+              padding: "0 80px",
+              marginTop: 28,
+              lineHeight: 1.3,
+            }}
+          >
+            {brand.ogSubtitle}
+          </div>
+        ) : null}
       </div>
     ),
     ogImageSize,

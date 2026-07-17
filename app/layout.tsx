@@ -1,55 +1,54 @@
 import type { Metadata, Viewport } from "next";
 import { AnalyticsDeferred } from "@/components/AnalyticsDeferred";
-import {
-  siteDescription,
-  siteKeywords,
-  siteName,
-  siteTitle,
-  siteUrl,
-} from "@/lib/seo";
+import { getRequestBrand } from "@/lib/brand-server";
+import { siteKeywords } from "@/lib/seo";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: siteTitle,
-    template: `%s | ${siteName}`,
-  },
-  description: siteDescription,
-  keywords: [...siteKeywords],
-  applicationName: siteName,
-  category: "health",
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    title: siteTitle,
-    description: siteDescription,
-    url: "/",
-    siteName,
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteTitle,
-    description: siteDescription,
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+export async function generateMetadata(): Promise<Metadata> {
+  const brand = await getRequestBrand();
+
+  return {
+    metadataBase: new URL(brand.siteUrl),
+    title: {
+      default: brand.siteTitle,
+      template: `%s | ${brand.siteName}`,
+    },
+    description: brand.siteDescription,
+    keywords: [...siteKeywords],
+    applicationName: brand.siteName,
+    category: "health",
+    alternates: {
+      canonical: "/",
+    },
+    openGraph: {
+      title: brand.ogTitle,
+      description: brand.ogSubtitle ?? brand.siteDescription,
+      url: "/",
+      siteName: brand.siteName,
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: brand.ogTitle,
+      description: brand.ogSubtitle ?? brand.siteDescription,
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-snippet": -1,
-      "max-image-preview": "large",
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+      },
     },
-  },
-  other: {
-    "geo.region": "US-GA",
-    "geo.placename": "Atlanta",
-  },
-};
+    other: {
+      "geo.region": "US-GA",
+      "geo.placename": "Atlanta",
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",

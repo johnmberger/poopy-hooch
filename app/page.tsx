@@ -1,8 +1,9 @@
 import { BuiltByFooter } from "@/components/BuiltByFooter";
 import { UsgsBacterialertLink } from "@/components/UsgsBacterialertLink";
 import { HoochDashboard } from "@/components/HoochDashboard";
+import { getRequestBrand } from "@/lib/brand-server";
 import { getServerBacteriaHistory, getServerBacteriaReport } from "@/lib/bacteria-server";
-import { getStructuredData, titleHelper } from "@/lib/seo";
+import { getStructuredData } from "@/lib/seo";
 
 export const revalidate = 3600;
 
@@ -12,6 +13,7 @@ export default async function Home({
   searchParams: Promise<{ poop?: string }>;
 }) {
   const { poop } = await searchParams;
+  const brand = await getRequestBrand();
   const [initialReport, historyPreview] = await Promise.all([
     getServerBacteriaReport(),
     getServerBacteriaHistory("P7D"),
@@ -22,12 +24,13 @@ export default async function Home({
     <main>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(getStructuredData()) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(getStructuredData(brand)) }}
       />
 
       <article>
-        <h1>Is the Hooch poopy?</h1>
-        <p className="title-helper">{titleHelper}</p>
+        <h1>{brand.siteName}</h1>
+        <p className="title-helper">{brand.titleHelper}</p>
+        {brand.verdictPrompt && <p className="verdict-prompt">{brand.verdictPrompt}</p>}
 
         <HoochDashboard
           initialReport={initialReport}

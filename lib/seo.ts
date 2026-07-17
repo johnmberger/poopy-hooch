@@ -1,19 +1,16 @@
+import type { Brand } from "@/lib/brand";
+import { brands } from "@/lib/brand";
 import { E_COLI_THRESHOLD } from "@/lib/usgs";
 
-export const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://isthehoochpoopy.com";
-
-export const siteName = "Is the Hooch poopy?";
-
-export const titleHelper = "Chattahoochee River water quality today · Atlanta, Georgia";
-
-export const siteTitle = "Is the Hooch poopy? | Chattahoochee River Tubing & Safety Check";
-
-export const siteDescription =
-  "Chattahoochee River water quality today — is it safe to shoot the Hooch? Check live E. coli bacteria levels before tubing or floating in Atlanta. USGS BacteriALERT readings at Medlock Bridge, Powers Ferry, and Paces Ferry.";
+export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? brands.isthehoochpoopy.siteUrl;
+export const siteName = brands.isthehoochpoopy.siteName;
+export const titleHelper = brands.isthehoochpoopy.titleHelper;
+export const siteTitle = brands.isthehoochpoopy.siteTitle;
+export const siteDescription = brands.isthehoochpoopy.siteDescription;
 
 export const siteKeywords = [
   "is the hooch poopy",
+  "poop the hooch",
   "is the hooch safe",
   "is it safe to shoot the hooch",
   "shoot the hooch",
@@ -91,25 +88,25 @@ export const faqItems = [
   },
 ] as const;
 
-export function getStructuredData() {
+export function getStructuredData(brand: Brand = brands.isthehoochpoopy) {
   return {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "WebSite",
-        "@id": `${siteUrl}/#website`,
-        url: siteUrl,
-        name: siteName,
-        description: siteDescription,
+        "@id": `${brand.siteUrl}/#website`,
+        url: brand.siteUrl,
+        name: brand.siteName,
+        description: brand.siteDescription,
         inLanguage: "en-US",
       },
       {
         "@type": "WebPage",
-        "@id": `${siteUrl}/#webpage`,
-        url: siteUrl,
-        name: siteTitle,
-        description: siteDescription,
-        isPartOf: { "@id": `${siteUrl}/#website` },
+        "@id": `${brand.siteUrl}/#webpage`,
+        url: brand.siteUrl,
+        name: brand.siteTitle,
+        description: brand.siteDescription,
+        isPartOf: { "@id": `${brand.siteUrl}/#website` },
         about: [
           "Chattahoochee River water quality today",
           "Chattahoochee River tubing safety",
@@ -123,10 +120,10 @@ export function getStructuredData() {
       },
       {
         "@type": "WebApplication",
-        "@id": `${siteUrl}/#app`,
-        name: siteName,
-        url: siteUrl,
-        description: siteDescription,
+        "@id": `${brand.siteUrl}/#app`,
+        name: brand.siteName,
+        url: brand.siteUrl,
+        description: brand.siteDescription,
         applicationCategory: "HealthApplication",
         operatingSystem: "Any",
         browserRequirements: "Requires JavaScript",
@@ -152,7 +149,7 @@ export function getStructuredData() {
       },
       {
         "@type": "FAQPage",
-        "@id": `${siteUrl}/#faq`,
+        "@id": `${brand.siteUrl}/#faq`,
         mainEntity: faqItems.map((item) => ({
           "@type": "Question",
           name: item.question,

@@ -1,9 +1,11 @@
-import { generateOgImage, ogImageAlt, ogImageSize } from "@/lib/og-image";
+import { getRequestBrand } from "@/lib/brand-server";
+import { generateOgImage, ogImageSize } from "@/lib/og-image";
 
-export const alt = ogImageAlt;
 export const size = ogImageSize;
 export const contentType = "image/png";
+export const alt = "Chattahoochee River bacteria check";
 
-export default function OpenGraphImage() {
-  return generateOgImage();
+export default async function OpenGraphImage() {
+  const brand = await getRequestBrand();
+  return generateOgImage(brand);
 }

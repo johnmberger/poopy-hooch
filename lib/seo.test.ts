@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { faqItems, getStructuredData, siteDescription, siteUrl } from "@/lib/seo";
+import { brands } from "@/lib/brand";
+import { faqItems, getStructuredData } from "@/lib/seo";
 
 describe("getStructuredData", () => {
   it("includes website, webpage, app, and FAQ schema nodes", () => {
@@ -11,11 +12,21 @@ describe("getStructuredData", () => {
   });
 
   it("uses the public site URL in canonical schema ids", () => {
-    const data = getStructuredData();
+    const brand = brands.isthehoochpoopy;
+    const data = getStructuredData(brand);
     const website = data["@graph"].find((node) => node["@type"] === "WebSite");
 
-    expect(website?.["@id"]).toBe(`${siteUrl}/#website`);
-    expect(website?.description).toBe(siteDescription);
+    expect(website?.["@id"]).toBe(`${brand.siteUrl}/#website`);
+    expect(website?.description).toBe(brand.siteDescription);
+  });
+
+  it("uses poopthehooch branding when that brand is passed in", () => {
+    const brand = brands.poopthehooch;
+    const data = getStructuredData(brand);
+    const website = data["@graph"].find((node) => node["@type"] === "WebSite");
+
+    expect(website?.name).toBe("Poop the Hooch");
+    expect(website?.["@id"]).toBe("https://poopthehooch.com/#website");
   });
 
   it("mirrors FAQ items into structured data", () => {
