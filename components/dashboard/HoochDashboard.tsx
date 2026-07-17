@@ -91,10 +91,10 @@ export function HoochDashboard({
       <section className={`verdict ${verdictClass(report)}`} aria-live="polite">
         <h2>{report.summary.headline}</h2>
         <p className="verdict-message">{report.summary.message}</p>
-        <p className="verdict-context">
-          Based on estimated E. coli at {report.stations.length} USGS stations on the Chattahoochee River.
+        <p className="verdict-updated">
+          Updated {formatObservedAt(report.updatedAt)}. Based on E. coli readings at{" "}
+          {report.stations.length} USGS stations on the Chattahoochee.
         </p>
-        <p className="verdict-updated">Updated {formatObservedAt(report.updatedAt)}</p>
       </section>
 
       <ErrorBoundary

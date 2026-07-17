@@ -537,18 +537,6 @@ html[data-theme="light"] .map-loading-skeleton::before {
   }
 }
 
-@keyframes dot-pulse {
-  0%,
-  100% {
-    opacity: 0.3;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.65;
-    transform: scale(1.12);
-  }
-}
-
 @keyframes safe-glow {
   0%,
   100% {
@@ -625,10 +613,6 @@ html[data-theme="light"] .map-loading-skeleton::before {
   .map-explore-btn {
     animation: soft-pulse 2.8s ease-in-out infinite;
   }
-
-  .verdict-updated::before {
-    animation: dot-pulse 3.2s ease-in-out infinite;
-  }
 }
 
 /* Verdict */
@@ -684,34 +668,12 @@ html[data-theme="light"] .map-loading-skeleton::before {
   font-size: 0.95rem;
 }
 
-.verdict-context {
+.verdict p.verdict-updated {
   margin-top: 0.65rem;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-.verdict.unsafe .verdict-context {
-  color: var(--inverted-muted);
-}
-
-.verdict-updated {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.5rem;
   font-size: 0.75rem;
   font-style: italic;
+  line-height: 1.45;
   color: var(--text-muted);
-}
-
-.verdict-updated::before {
-  content: "";
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: currentColor;
-  flex-shrink: 0;
-  opacity: 0.45;
 }
 
 .verdict.unsafe .verdict-updated {
@@ -1430,6 +1392,10 @@ html[data-theme="light"] .map-loading-skeleton::before {
   .title-helper {
     font-size: 0.7rem;
     margin-bottom: 1.25rem;
+  }
+
+  .verdict p.verdict-updated {
+    font-size: 0.7rem;
   }
 
   .verdict-prompt {
