@@ -298,22 +298,6 @@ function TimelineChart({
         </g>
       ))}
 
-      <line
-        x1={PADDING.left}
-        x2={CHART_WIDTH - PADDING.right}
-        y1={thresholdY}
-        y2={thresholdY}
-        className="timeline-threshold-line"
-      />
-      <text
-        x={CHART_WIDTH - PADDING.right}
-        y={thresholdY - 6}
-        className="timeline-threshold-label"
-        textAnchor="end"
-      >
-        {narrow ? E_COLI_THRESHOLD : `EPA limit (${E_COLI_THRESHOLD})`}
-      </text>
-
       {stations.map((station, index) => (
         <path
           key={station.id}
@@ -323,6 +307,14 @@ function TimelineChart({
           fill="none"
         />
       ))}
+
+      <line
+        x1={PADDING.left}
+        x2={CHART_WIDTH - PADDING.right}
+        y1={thresholdY}
+        y2={thresholdY}
+        className="timeline-threshold-line"
+      />
 
       {hover && (
         <>
@@ -471,6 +463,10 @@ export function EcoliTimeline({
                   {station.name}
                 </li>
               ))}
+              <li>
+                <span className="timeline-legend-swatch timeline-legend-swatch-threshold" aria-hidden="true" />
+                EPA limit ({E_COLI_THRESHOLD})
+              </li>
             </ul>
           </>
         )}

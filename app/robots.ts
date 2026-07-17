@@ -1,15 +1,13 @@
 import type { MetadataRoute } from "next";
 
-import { getRequestBrand } from "@/lib/brand/server";
+import { BRAND_IDS, brands } from "@/lib/brand";
 
-export default async function robots(): Promise<MetadataRoute.Robots> {
-  const brand = await getRequestBrand();
-
+export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: `${brand.siteUrl}/sitemap.xml`,
+    sitemap: BRAND_IDS.map((id) => `${brands[id].siteUrl}/sitemap.xml`),
   };
 }

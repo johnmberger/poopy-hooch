@@ -1,24 +1,23 @@
 import { BuiltByFooter } from "@/components/shared/BuiltByFooter";
 import { UsgsBacterialertLink } from "@/components/shared/UsgsBacterialertLink";
 import { HoochDashboard } from "@/components/dashboard/HoochDashboard";
-import { getRequestBrand } from "@/lib/brand/server";
+import { getBrandFromParams } from "@/lib/brand/server";
 import { getServerBacteriaHistoryPreview, getServerBacteriaReport } from "@/lib/bacteria/server";
 import { getStructuredData } from "@/lib/seo";
 
 export const revalidate = 3600;
 
 export default async function Home({
-  searchParams,
+  params,
 }: {
-  searchParams: Promise<{ poop?: string }>;
+  params: Promise<{ brand: string }>;
 }) {
-  const { poop } = await searchParams;
-  const brand = await getRequestBrand();
+  const { brand: brandId } = await params;
+  const brand = getBrandFromParams(brandId);
   const [initialReport, historyPreview] = await Promise.all([
     getServerBacteriaReport(),
     getServerBacteriaHistoryPreview("P7D"),
   ]);
-  const forcePoop = process.env.NODE_ENV === "development" && poop === "1";
 
   return (
     <main>
@@ -32,11 +31,7 @@ export default async function Home({
         <p className="title-helper">{brand.titleHelper}</p>
         {brand.verdictPrompt && <p className="verdict-prompt">{brand.verdictPrompt}</p>}
 
-        <HoochDashboard
-          initialReport={initialReport}
-          historyPreview={historyPreview}
-          forcePoop={forcePoop}
-        />
+        <HoochDashboard initialReport={initialReport} historyPreview={historyPreview} />
       </article>
 
       <BuiltByFooter />

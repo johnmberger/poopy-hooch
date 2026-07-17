@@ -1028,12 +1028,7 @@ a:hover {
   stroke: var(--poopy);
   stroke-width: 1.5;
   stroke-dasharray: 5 4;
-  opacity: 0.85;
-}
-
-.timeline-threshold-label {
-  fill: var(--poopy);
-  font-size: 10px;
+  opacity: 0.95;
 }
 
 .timeline-axis-label {
@@ -1082,6 +1077,14 @@ a:hover {
   width: 0.75rem;
   height: 0.15rem;
   border-radius: 999px;
+}
+
+.timeline-legend-swatch-threshold {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--poopy) 0 3px,
+    transparent 3px 5px
+  );
 }
 
 .timeline-skeleton {
@@ -1321,10 +1324,6 @@ a:hover {
   }
 
   .timeline-axis-label {
-    font-size: 9px;
-  }
-
-  .timeline-threshold-label {
     font-size: 9px;
   }
 }

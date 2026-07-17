@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { brands, getBrandFromHost, normalizeHost } from "@/lib/brand";
+import {
+  brandStaticParams,
+  brands,
+  getBrand,
+  getBrandFromHost,
+  isBrandId,
+  normalizeHost,
+} from "@/lib/brand";
 
 describe("normalizeHost", () => {
   it("strips www, ports, and lowercases", () => {
@@ -20,5 +27,21 @@ describe("getBrandFromHost", () => {
     expect(getBrandFromHost("localhost:3000")).toEqual(brands.isthehoochpoopy);
     expect(getBrandFromHost(null)).toEqual(brands.isthehoochpoopy);
     expect(brands.isthehoochpoopy.verdictPrompt).toBeNull();
+  });
+});
+
+describe("getBrand / isBrandId", () => {
+  it("resolves known brand ids and falls back for unknown ones", () => {
+    expect(isBrandId("poopthehooch")).toBe(true);
+    expect(isBrandId("nope")).toBe(false);
+    expect(getBrand("poopthehooch")).toEqual(brands.poopthehooch);
+    expect(getBrand("nope")).toEqual(brands.isthehoochpoopy);
+  });
+
+  it("lists both brands for static generation", () => {
+    expect(brandStaticParams()).toEqual([
+      { brand: "isthehoochpoopy" },
+      { brand: "poopthehooch" },
+    ]);
   });
 });

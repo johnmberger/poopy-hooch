@@ -1,20 +1,21 @@
 import type { MetadataRoute } from "next";
 
-import { getRequestBrand } from "@/lib/brand/server";
+import { BRAND_IDS, brands } from "@/lib/brand";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const brand = await getRequestBrand();
-
-  return [
-    {
-      url: brand.siteUrl,
-      changeFrequency: "hourly",
-      priority: 1,
-    },
-    {
-      url: `${brand.siteUrl}/history`,
-      changeFrequency: "hourly",
-      priority: 0.8,
-    },
-  ];
+export default function sitemap(): MetadataRoute.Sitemap {
+  return BRAND_IDS.flatMap((id) => {
+    const brand = brands[id];
+    return [
+      {
+        url: brand.siteUrl,
+        changeFrequency: "hourly" as const,
+        priority: 1,
+      },
+      {
+        url: `${brand.siteUrl}/history`,
+        changeFrequency: "hourly" as const,
+        priority: 0.8,
+      },
+    ];
+  });
 }

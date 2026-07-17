@@ -4,13 +4,18 @@ import Link from "next/link";
 import { BuiltByFooter } from "@/components/shared/BuiltByFooter";
 import { EcoliTimeline } from "@/components/history/EcoliTimeline";
 import { UsgsBacterialertLink } from "@/components/shared/UsgsBacterialertLink";
-import { getRequestBrand } from "@/lib/brand/server";
+import { getBrandFromParams } from "@/lib/brand/server";
 import { getServerBacteriaHistory } from "@/lib/bacteria/server";
 
 export const revalidate = 3600;
 
-export async function generateMetadata(): Promise<Metadata> {
-  const brand = await getRequestBrand();
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ brand: string }>;
+}): Promise<Metadata> {
+  const { brand: brandId } = await params;
+  const brand = getBrandFromParams(brandId);
 
   return {
     title: "Chattahoochee River bacteria history",

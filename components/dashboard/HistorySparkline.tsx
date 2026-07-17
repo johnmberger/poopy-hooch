@@ -44,13 +44,6 @@ export function HistorySparkline({ stations }: { stations: StationHistory[] }) {
 
   return (
     <svg className="history-sparkline" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} aria-hidden="true">
-      <line
-        x1={PADDING}
-        x2={WIDTH - PADDING}
-        y1={thresholdY}
-        y2={thresholdY}
-        className="history-sparkline-threshold"
-      />
       {stations.map((station, index) => (
         <path
           key={station.id}
@@ -60,6 +53,13 @@ export function HistorySparkline({ stations }: { stations: StationHistory[] }) {
           fill="none"
         />
       ))}
+      <line
+        x1={PADDING}
+        x2={WIDTH - PADDING}
+        y1={thresholdY}
+        y2={thresholdY}
+        className="history-sparkline-threshold"
+      />
     </svg>
   );
 }

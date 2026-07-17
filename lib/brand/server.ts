@@ -1,14 +1,11 @@
-import { headers } from "next/headers";
+import { brands, getBrand, type Brand, type BrandId } from "@/lib/brand";
 
-import { brands, getBrandFromHost, type Brand, type BrandId } from "@/lib/brand";
+/** Resolve brand from a path segment — no headers(), safe for ISR. */
+export function getBrandFromParams(brandId: string): Brand {
+  return getBrand(brandId);
+}
 
-export async function getRequestBrand(): Promise<Brand> {
-  const forced = process.env.FORCE_BRAND as BrandId | undefined;
-  if (forced && forced in brands) {
-    return brands[forced];
-  }
-
-  const headerStore = await headers();
-  const host = headerStore.get("x-forwarded-host") ?? headerStore.get("host");
-  return getBrandFromHost(host);
+export function assertBrandId(brandId: string): BrandId {
+  if (brandId in brands) return brandId as BrandId;
+  return brands.isthehoochpoopy.id;
 }

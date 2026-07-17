@@ -37,14 +37,19 @@ function verdictClass(report: BacteriaReport): "safe" | "unsafe" | "mixed" {
 export function HoochDashboard({
   initialReport,
   historyPreview = null,
-  forcePoop = false,
 }: {
   initialReport: BacteriaReport | null;
   historyPreview?: BacteriaHistoryReport | null;
-  forcePoop?: boolean;
 }) {
   const [report, setReport] = useState<BacteriaReport | null>(initialReport);
   const [error, setError] = useState<string | null>(null);
+  const [forcePoop, setForcePoop] = useState(false);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      setForcePoop(new URLSearchParams(window.location.search).get("poop") === "1");
+    }
+  }, []);
 
   useEffect(() => {
     if (initialReport) return;

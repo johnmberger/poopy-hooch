@@ -42,12 +42,30 @@ export const brands: Record<BrandId, Brand> = {
   },
 };
 
+export const BRAND_IDS = Object.keys(brands) as BrandId[];
+
+export function isBrandId(value: string): value is BrandId {
+  return value in brands;
+}
+
+export function getBrand(id: string | null | undefined): Brand {
+  if (id && isBrandId(id)) return brands[id];
+  return brands[DEFAULT_BRAND_ID];
+}
+
 export function normalizeHost(host: string): string {
   return host.toLowerCase().split(":")[0]!.replace(/^www\./, "");
 }
 
 export function getBrandFromHost(host: string | null | undefined): Brand {
+  const forced = process.env.FORCE_BRAND;
+  if (forced && isBrandId(forced)) return brands[forced];
+
   const normalized = normalizeHost(host ?? "");
   if (normalized === "poopthehooch.com") return brands.poopthehooch;
   return brands.isthehoochpoopy;
+}
+
+export function brandStaticParams() {
+  return BRAND_IDS.map((brand) => ({ brand }));
 }
