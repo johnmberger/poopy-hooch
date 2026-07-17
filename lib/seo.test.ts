@@ -25,7 +25,7 @@ describe("getStructuredData", () => {
     const data = getStructuredData(brand);
     const website = data["@graph"].find((node) => node["@type"] === "WebSite");
 
-    expect(website?.name).toBe("Poop the Hooch");
+    expect(website?.name).toBe("Poop the Hooch!");
     expect(website?.["@id"]).toBe("https://poopthehooch.com/#website");
   });
 
