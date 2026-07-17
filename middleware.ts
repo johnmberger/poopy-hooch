@@ -5,6 +5,12 @@ import { getBrandFromHost, isBrandId } from "@/lib/brand";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  if (pathname === "/llms.txt") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/api/llms";
+    return NextResponse.rewrite(url);
+  }
+
   if (
     pathname.startsWith("/api") ||
     pathname.startsWith("/_next") ||

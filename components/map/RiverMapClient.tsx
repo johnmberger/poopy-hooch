@@ -21,8 +21,6 @@ import riverData from "@/data/chattahoochee-river.json";
 const river = riverData as FeatureCollection;
 
 const TILE_VOYAGER = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png";
-const TILE_VOYAGER_NOLABELS = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png";
-const TILE_DARK_LABELS = "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}.png";
 
 interface RiverMapClientProps {
   stations: StationReading[];
@@ -151,8 +149,9 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
   const stationStroke = isLight ? "#111827" : "#000";
   const putInStroke = isLight ? "#111827" : "#fff";
   const putInFill = isLight ? "#1d4ed8" : "#93c5fd";
-  const preferRetina =
-    typeof window !== "undefined" && !window.matchMedia("(pointer: coarse)").matches;
+  // Match display DPR so Lighthouse doesn't flag undersized tiles on retina.
+  const detectRetina =
+    typeof window !== "undefined" && window.devicePixelRatio > 1;
 
   // Two-phase remount: drop the old Leaflet DOM completely before building the next theme.
   // Mobile Safari otherwise keeps the previous filtered tile composite.
@@ -251,31 +250,16 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
           <MapInteraction interactive={interactive} />
           <FitBounds bounds={bounds} />
 
-          {isLight ? (
-            <TileLayer
-              url={TILE_VOYAGER}
-              detectRetina={preferRetina}
-              eventHandlers={{
-                load: () => setTilesReady(true),
-              }}
-            />
-          ) : (
-            <>
-              <TileLayer
-                url={TILE_VOYAGER_NOLABELS}
-                className="river-map-base-tiles"
-                detectRetina={preferRetina}
-                eventHandlers={{
-                  load: () => setTilesReady(true),
-                }}
-              />
-              <TileLayer
-                url={TILE_DARK_LABELS}
-                className="river-map-label-tiles"
-                detectRetina={preferRetina}
-              />
-            </>
-          )}
+          <TileLayer
+            url={TILE_VOYAGER}
+            className="river-map-base-tiles"
+            detectRetina={detectRetina}
+            keepBuffer={1}
+            updateWhenZooming={false}
+            eventHandlers={{
+              load: () => setTilesReady(true),
+            }}
+          />
 
           {outline && (
             <GeoJSON
