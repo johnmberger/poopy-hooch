@@ -20,18 +20,7 @@ export function useTheme(): Theme {
 
     const observer = new MutationObserver(sync);
     observer.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
-
-    const onThemeChange = (event: Event) => {
-      const detail = (event as CustomEvent<Theme>).detail;
-      if (detail === "light" || detail === "dark") setTheme(detail);
-      else sync();
-    };
-    window.addEventListener("themechange", onThemeChange);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("themechange", onThemeChange);
-    };
+    return () => observer.disconnect();
   }, []);
 
   return theme;

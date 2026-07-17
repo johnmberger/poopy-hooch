@@ -34,7 +34,7 @@ export function BuiltByFooter() {
             href="https://github.com/johnmberger"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="John Berger on GitHub"
+            aria-label="John Berger on GitHub (opens in a new tab)"
             onClick={() => trackOutbound("github")}
           >
             <GitHubIcon />
@@ -43,7 +43,7 @@ export function BuiltByFooter() {
             href="https://www.linkedin.com/in/johnmberger/"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="John Berger on LinkedIn"
+            aria-label="John Berger on LinkedIn (opens in a new tab)"
             onClick={() => trackOutbound("linkedin")}
           >
             <LinkedInIcon />

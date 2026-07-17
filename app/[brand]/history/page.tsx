@@ -37,25 +37,26 @@ export default async function HistoryPage() {
   const initialHistory = await getServerBacteriaHistory("P7D");
 
   return (
-    <main>
-      <article>
-        <p className="page-back">
-          <Link href="/">← Today&apos;s check</Link>
-        </p>
+    <>
+      <main>
+        <article>
+          <p className="page-back">
+            <Link href="/">← Today&apos;s check</Link>
+          </p>
 
-        <h1>Recent levels</h1>
-        <p className="title-helper">Chattahoochee River E. coli history · Atlanta, Georgia</p>
+          <h1>Recent levels</h1>
+          <p className="title-helper">Chattahoochee River E. coli history · Atlanta, Georgia</p>
 
-        <EcoliTimeline initialHistory={initialHistory} />
-      </article>
+          <EcoliTimeline initialHistory={initialHistory} />
+        </article>
 
+        <noscript>
+          <p className="noscript">
+            See official readings at <UsgsBacterialertLink />.
+          </p>
+        </noscript>
+      </main>
       <BuiltByFooter />
-
-      <noscript>
-        <p className="noscript">
-          See official readings at <UsgsBacterialertLink />.
-        </p>
-      </noscript>
-    </main>
+    </>
   );
 }

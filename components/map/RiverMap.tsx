@@ -57,7 +57,7 @@ export function RiverMap({ stations }: RiverMapProps) {
 
   return (
     <figure className="river-map">
-      <figcaption className="stations-heading">River map</figcaption>
+      <h2 className="stations-heading">River map</h2>
       <p className="section-note">
         River color blends between monitoring stations downstream. Zoom in for put-ins.
       </p>
@@ -83,13 +83,13 @@ export function RiverMap({ stations }: RiverMapProps) {
       </div>
       <div className="map-legend">
         <span className="map-legend-item">
-          <span className="map-legend-swatch low" /> not poopy
+          <span className="map-legend-swatch low" aria-hidden="true" /> not poopy
         </span>
         <span className="map-legend-item">
-          <span className="map-legend-swatch high" /> poopy
+          <span className="map-legend-swatch high" aria-hidden="true" /> poopy
         </span>
         <span className="map-legend-item">
-          <span className="map-legend-swatch putin" /> put-in
+          <span className="map-legend-swatch putin" aria-hidden="true" /> put-in
         </span>
       </div>
     </figure>

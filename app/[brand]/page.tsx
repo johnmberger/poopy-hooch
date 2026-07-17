@@ -20,28 +20,29 @@ export default async function Home({
   ]);
 
   return (
-    <main>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(getStructuredData(brand)) }}
-      />
+    <>
+      <main>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(getStructuredData(brand)) }}
+        />
 
-      <article>
-        <h1>{brand.siteName}</h1>
-        <p className="title-helper">{brand.titleHelper}</p>
-        {brand.verdictPrompt && <p className="verdict-prompt">{brand.verdictPrompt}</p>}
+        <article>
+          <h1>{brand.siteName}</h1>
+          <p className="title-helper">{brand.titleHelper}</p>
+          {brand.verdictPrompt && <p className="verdict-prompt">{brand.verdictPrompt}</p>}
 
-        <HoochDashboard initialReport={initialReport} historyPreview={historyPreview} />
-      </article>
+          <HoochDashboard initialReport={initialReport} historyPreview={historyPreview} />
+        </article>
 
+        <noscript>
+          <p className="noscript">
+            Is it safe to shoot the Hooch today? This page needs JavaScript for the live map and
+            bacteria check. See official readings at <UsgsBacterialertLink />.
+          </p>
+        </noscript>
+      </main>
       <BuiltByFooter />
-
-      <noscript>
-        <p className="noscript">
-          Is it safe to shoot the Hooch today? This page needs JavaScript for the live map and
-          bacteria check. See official readings at <UsgsBacterialertLink />.
-        </p>
-      </noscript>
-    </main>
+    </>
   );
 }

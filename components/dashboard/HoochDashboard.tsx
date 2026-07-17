@@ -73,7 +73,7 @@ export function HoochDashboard({
 
   if (error) {
     return (
-      <div className="error-box">
+      <div className="error-box" role="alert">
         <p>welp. {error}</p>
         <p style={{ marginTop: "0.75rem", fontSize: "0.85rem" }}>
           try again or hit up <UsgsBacterialertLink />.
@@ -100,7 +100,7 @@ export function HoochDashboard({
       <ErrorBoundary
         fallback={
           <figure className="river-map">
-            <figcaption className="stations-heading">River map</figcaption>
+            <h2 className="stations-heading">River map</h2>
             <div className="map-error" role="status">
               <p>Map failed to load.</p>
               <p>Station readings below still work.</p>
@@ -111,12 +111,9 @@ export function HoochDashboard({
         <RiverMap stations={report.stations} />
       </ErrorBoundary>
 
-      <p className="stations-heading">Monitoring stations</p>
+      <h2 className="stations-heading">Monitoring stations</h2>
       <p className="section-note">
-        USGS estimates, not gospel.{" "}
-        <a href="https://ga.water.usgs.gov/bacteria/" target="_blank" rel="noopener noreferrer">
-          Source
-        </a>
+        USGS estimates, not gospel. <UsgsBacterialertLink>Source</UsgsBacterialertLink>
       </p>
       <ul className="station-list">
         {report.stations.map((station) => (

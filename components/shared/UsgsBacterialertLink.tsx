@@ -6,6 +6,7 @@ export function UsgsBacterialertLink({ children = "USGS BacteriALERT" }: { child
   return (
     <a href={USGS_BACTERIA_URL} target="_blank" rel="noopener noreferrer">
       {children}
+      <span className="visually-hidden"> (opens in a new tab)</span>
     </a>
   );
 }

@@ -147,8 +147,8 @@ describe("blendRiverColors", () => {
   });
 
   it("uses the light palette when provided", () => {
-    expect(blendRiverColors("low", "low", 0, RIVER_COLORS_LIGHT)).toBe("#16a34a");
-    expect(blendRiverColors("high", "high", 1, RIVER_COLORS_LIGHT)).toBe("#dc2626");
+    expect(blendRiverColors("low", "low", 0, RIVER_COLORS_LIGHT)).toBe("#15803d");
+    expect(blendRiverColors("high", "high", 1, RIVER_COLORS_LIGHT)).toBe("#b91c1c");
   });
 });
 

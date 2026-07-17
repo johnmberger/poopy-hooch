@@ -3,6 +3,8 @@ export const E_COLI_THRESHOLD = 235;
 export const USGS_BACTERIA_URL = "https://ga.water.usgs.gov/bacteria/";
 
 export const STATION_CHART_COLORS = ["#93c5fd", "#a78bfa", "#fbbf24"] as const;
+/** Distinct station series colors for light backgrounds (hue-separated, WCAG non-text ≥3:1). */
+export const STATION_CHART_COLORS_LIGHT = ["#1d4ed8", "#0f766e", "#7e22ce"] as const;
 
 export const STATIONS = [
   {
@@ -111,8 +113,8 @@ export function riskFromEcoli(eColi: number): RiskLevel {
 
 export const RIVER_CLEAN_COLOR = "#4ade80";
 export const RIVER_POOPY_COLOR = "#f87171";
-export const RIVER_CLEAN_COLOR_LIGHT = "#16a34a";
-export const RIVER_POOPY_COLOR_LIGHT = "#dc2626";
+export const RIVER_CLEAN_COLOR_LIGHT = "#15803d";
+export const RIVER_POOPY_COLOR_LIGHT = "#b91c1c";
 
 export type RiverColorPalette = {
   clean: string;
@@ -129,7 +131,7 @@ export const RIVER_COLORS_LIGHT: RiverColorPalette = {
   poopy: RIVER_POOPY_COLOR_LIGHT,
 };
 
-const RIVER_GRADIENT_STEPS = 20;
+const RIVER_GRADIENT_STEPS = 8;
 
 export interface RiverGradientPart {
   coordinates: [number, number][];

@@ -18,13 +18,11 @@ import {
 import { useTheme } from "@/lib/use-theme";
 import riverData from "@/data/chattahoochee-river.json";
 
-const PUT_IN = "#93c5fd";
 const river = riverData as FeatureCollection;
 
-const TILE_BASE_DARK = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png";
-const TILE_LABELS_DARK = "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}.png";
-/** Full Voyager (streets + labels) — no darkening filter / blend stack in light mode. */
-const TILE_BASE_LIGHT = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png";
+const TILE_VOYAGER = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png";
+const TILE_VOYAGER_NOLABELS = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png";
+const TILE_DARK_LABELS = "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}.png";
 
 interface RiverMapClientProps {
   stations: StationReading[];
@@ -73,7 +71,7 @@ function PutInPane() {
   return null;
 }
 
-function PutInsLayer({ markerStroke }: { markerStroke: string }) {
+function PutInsLayer({ markerStroke, fillColor }: { markerStroke: string; fillColor: string }) {
   const map = useMap();
   const [zoom, setZoom] = useState(PUT_IN_DETAIL_ZOOM - 1);
 
@@ -90,14 +88,14 @@ function PutInsLayer({ markerStroke }: { markerStroke: string }) {
     <>
       {putInsForZoom(zoom).map((putIn) => (
         <CircleMarker
-          key={`${putIn.id}-${markerStroke}`}
+          key={putIn.id}
           pane="putInPane"
           center={[putIn.lat, putIn.lng]}
           radius={putIn.minZoom ? 4 : 5}
           pathOptions={{
             color: markerStroke,
             weight: 1.5,
-            fillColor: PUT_IN,
+            fillColor,
             fillOpacity: 0.95,
           }}
         >
@@ -147,19 +145,15 @@ function FitBounds({ bounds }: { bounds: LatLngBounds }) {
   return null;
 }
 
-/** Mobile Safari can leave filtered tile composited layers stuck after theme swaps. */
-function RedrawOnTheme({ theme }: { theme: string }) {
+/** Cheap relayout after tile swap — avoids tearing down the whole Leaflet map. */
+function RelayoutOnTheme({ theme }: { theme: string }) {
   const map = useMap();
 
   useEffect(() => {
-    const id = window.setTimeout(() => {
+    const id = window.requestAnimationFrame(() => {
       map.invalidateSize({ animate: false });
-      map.eachLayer((layer) => {
-        const tileLayer = layer as { redraw?: () => void };
-        tileLayer.redraw?.();
-      });
-    }, 60);
-    return () => window.clearTimeout(id);
+    });
+    return () => window.cancelAnimationFrame(id);
   }, [map, theme]);
 
   return null;
@@ -172,6 +166,7 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
   const outlineColor = isLight ? "#c5c9d0" : "#2a2a2a";
   const stationStroke = isLight ? "#111827" : "#000";
   const putInStroke = isLight ? "#111827" : "#fff";
+  const putInFill = isLight ? "#1d4ed8" : "#93c5fd";
   const preferRetina =
     typeof window !== "undefined" && !window.matchMedia("(pointer: coarse)").matches;
   const coloredSegments = useMemo(
@@ -199,19 +194,19 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
             }),
           );
         }),
-    [river, stations, riverColors, theme],
+    [stations, riverColors, theme],
   );
 
   const bounds = useMemo((): LatLngBounds => {
-    const outline = river.features.find((f) => f.properties?.kind === "river-outline");
+    const outlineFeature = river.features.find((f) => f.properties?.kind === "river-outline");
     const points: [number, number][] = [
       ...defaultPutIns().map((p) => [p.lat, p.lng] as [number, number]),
       ...stations.map((s) => [s.lat, s.lng] as [number, number]),
     ];
 
-    if (outline?.geometry.type === "LineString") {
+    if (outlineFeature?.geometry.type === "LineString") {
       points.push(
-        ...(outline.geometry as LineString).coordinates.map(
+        ...(outlineFeature.geometry as LineString).coordinates.map(
           ([lng, lat]) => [lat, lng] as [number, number],
         ),
       );
@@ -225,7 +220,7 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
     }
 
     return latLngBounds(points);
-  }, [river, stations]);
+  }, [stations]);
 
   const outline = river.features.find((f) => f.properties?.kind === "river-outline") as
     | Feature<LineString>
@@ -234,16 +229,15 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
   const [tilesReady, setTilesReady] = useState(false);
 
   useEffect(() => {
+    // Tile layers remount on theme change; keep the skeleton from sticking if load is cached.
     setTilesReady(false);
+    const fallback = window.setTimeout(() => setTilesReady(true), 1200);
+    return () => window.clearTimeout(fallback);
   }, [theme]);
 
   return (
-    <div
-      className={`river-map-viewport${tilesReady ? " is-ready" : ""}`}
-      data-map-theme={theme}
-    >
+    <div className={`river-map-viewport${tilesReady ? " is-ready" : ""}`} data-map-theme={theme}>
       <MapContainer
-        key={theme}
         center={[33.93, -84.32]}
         zoom={11}
         scrollWheelZoom={false}
@@ -254,14 +248,14 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
       >
         <MapInteraction interactive={interactive} />
         <FitBounds bounds={bounds} />
-        <RedrawOnTheme theme={theme} />
+        <RelayoutOnTheme theme={theme} />
         <PutInPane />
+
         {isLight ? (
           <TileLayer
             key="tiles-light"
-            url={TILE_BASE_LIGHT}
+            url={TILE_VOYAGER}
             detectRetina={preferRetina}
-            className="river-map-base-tiles"
             eventHandlers={{
               load: () => setTilesReady(true),
             }}
@@ -270,79 +264,79 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
           <>
             <TileLayer
               key="tiles-dark-base"
-              url={TILE_BASE_DARK}
-              detectRetina={preferRetina}
+              url={TILE_VOYAGER_NOLABELS}
               className="river-map-base-tiles"
+              detectRetina={preferRetina}
               eventHandlers={{
                 load: () => setTilesReady(true),
               }}
             />
             <TileLayer
               key="tiles-dark-labels"
-              url={TILE_LABELS_DARK}
-              detectRetina={preferRetina}
+              url={TILE_DARK_LABELS}
               className="river-map-label-tiles"
+              detectRetina={preferRetina}
             />
           </>
         )}
 
-      {outline && (
-        <GeoJSON
-          key={`outline-${theme}`}
-          data={outline}
-          pathOptions={{ color: outlineColor, weight: 12, opacity: 1, lineCap: "round", lineJoin: "round" }}
-        />
-      )}
+        {outline && (
+          <GeoJSON
+            key={`outline-${theme}`}
+            data={outline}
+            pathOptions={{ color: outlineColor, weight: 12, opacity: 1, lineCap: "round", lineJoin: "round" }}
+          />
+        )}
 
-      {coloredSegments.map((segment) => (
-        <GeoJSON
-          key={segment.key}
-          data={
-            {
-              type: "Feature",
-              properties: {},
-              geometry: {
-                type: "LineString",
-                coordinates: segment.coordinates,
-              },
-            } as Feature<LineString>
-          }
-          pathOptions={{
-            color: segment.color,
-            weight: 7,
-            opacity: 0.95,
-            lineCap: "round",
-            lineJoin: "round",
-          }}
-        />
-      ))}
+        {coloredSegments.map((segment) => (
+          <GeoJSON
+            key={segment.key}
+            data={
+              {
+                type: "Feature",
+                properties: {},
+                geometry: {
+                  type: "LineString",
+                  coordinates: segment.coordinates,
+                },
+              } as Feature<LineString>
+            }
+            pathOptions={{
+              color: segment.color,
+              weight: 7,
+              opacity: 0.95,
+              lineCap: "round",
+              lineJoin: "round",
+            }}
+          />
+        ))}
 
-      {stations.map((station) => (
-        <CircleMarker
-          key={`${station.id}-${theme}`}
-          center={[station.lat, station.lng]}
-          radius={8}
-          pathOptions={{
-            color: stationStroke,
-            weight: 2,
-            fillColor: station.risk === "low" ? riverColors.clean : riverColors.poopy,
-            fillOpacity: 1,
-          }}
-        >
-          <Tooltip
-            permanent
-            {...labelTooltipProps(station.labelDirection)}
-            className="map-label map-label-station"
+        {stations.map((station) => (
+          <CircleMarker
+            key={`${station.id}-${theme}`}
+            center={[station.lat, station.lng]}
+            radius={8}
+            pathOptions={{
+              color: stationStroke,
+              weight: 2,
+              fillColor: station.risk === "low" ? riverColors.clean : riverColors.poopy,
+              fillOpacity: 1,
+            }}
           >
-            {station.name}
-          </Tooltip>
-          <Popup className="map-popup">
-            {station.risk === "low" ? "clean" : "poopy"} · {Math.round(station.eColi)}
-          </Popup>
-        </CircleMarker>
-      ))}
+            <Tooltip
+              permanent
+              {...labelTooltipProps(station.labelDirection)}
+              className="map-label map-label-station"
+            >
+              {station.name}
+            </Tooltip>
+            <Popup className="map-popup">
+              {station.risk === "low" ? "clean" : "poopy"} · {Math.round(station.eColi)}
+            </Popup>
+          </CircleMarker>
+        ))}
 
-      <PutInsLayer markerStroke={putInStroke} />
+        <PutInsLayer key={theme} markerStroke={putInStroke} fillColor={putInFill} />
       </MapContainer>
       {!tilesReady && <MapLoadingSkeleton overlay />}
     </div>

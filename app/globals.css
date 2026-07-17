@@ -16,6 +16,8 @@
   --map-overlay: rgba(0, 0, 0, 0.82);
   --map-label-bg: #000;
   --map-label-fg: #fff;
+  --focus-ring: #93c5fd;
+  --put-in: #93c5fd;
   --radius: 6px;
   --radius-sm: 4px;
   --clean: #4ade80;
@@ -30,7 +32,7 @@ html[data-theme="light"] {
   color-scheme: light;
   --bg: #f3f4f6;
   --text: #111827;
-  --text-muted: #6b7280;
+  --text-muted: #4b5563;
   --border: rgba(17, 24, 39, 0.14);
   --surface: #e5e7eb;
   --hover-border: rgba(17, 24, 39, 0.35);
@@ -44,35 +46,52 @@ html[data-theme="light"] {
   --map-overlay: rgba(255, 255, 255, 0.92);
   --map-label-bg: #fff;
   --map-label-fg: #111827;
-  --clean: #16a34a;
-  --clean-bg: rgba(22, 163, 74, 0.12);
-  --poopy: #dc2626;
-  --poopy-bg: rgba(220, 38, 38, 0.1);
-  --mixed: #d97706;
-  --mixed-bg: rgba(217, 119, 6, 0.12);
+  --focus-ring: #1d4ed8;
+  --put-in: #1d4ed8;
+  --clean: #15803d;
+  --clean-bg: rgba(21, 128, 61, 0.12);
+  --poopy: #b91c1c;
+  --poopy-bg: rgba(185, 28, 28, 0.1);
+  --mixed: #b45309;
+  --mixed-bg: rgba(180, 83, 9, 0.12);
 }
 
-/* Brief window while toggling theme — avoid slowing everyday hover animations */
-html.theme-transition,
-html.theme-transition *,
-html.theme-transition *::before,
-html.theme-transition *::after {
+/* Brief window while toggling theme — only themed surfaces, not every DOM node */
+html.theme-transition body,
+html.theme-transition main,
+html.theme-transition .verdict,
+html.theme-transition .verdict h2,
+html.theme-transition .verdict p,
+html.theme-transition .station,
+html.theme-transition .station-badge,
+html.theme-transition .station-list-more,
+html.theme-transition .learn-more-toggle,
+html.theme-transition .learn-more-panel,
+html.theme-transition .timeline-panel,
+html.theme-transition .timeline-range-btn,
+html.theme-transition .timeline-tooltip,
+html.theme-transition .built-by,
+html.theme-transition .built-by a,
+html.theme-transition .theme-toggle,
+html.theme-transition .page-back a,
+html.theme-transition .section-note,
+html.theme-transition .section-note a,
+html.theme-transition .stations-heading,
+html.theme-transition .title-helper,
+html.theme-transition .verdict-prompt,
+html.theme-transition .seo-intro,
+html.theme-transition .seo-content,
+html.theme-transition .seo-content h2,
+html.theme-transition .map-explore-btn,
+html.theme-transition .map-legend,
+html.theme-transition .river-map-frame,
+html.theme-transition .map-error {
   transition:
     background-color 0.25s ease,
     color 0.25s ease,
     border-color 0.25s ease,
-    fill 0.25s ease,
-    stroke 0.25s ease,
-    box-shadow 0.25s ease,
-    outline-color 0.25s ease !important;
+    box-shadow 0.25s ease !important;
   transition-delay: 0s !important;
-}
-
-html.theme-transition .leaflet-container,
-html.theme-transition .leaflet-container *,
-html.theme-transition .leaflet-container *::before,
-html.theme-transition .leaflet-container *::after {
-  transition: none !important;
 }
 
 * {
@@ -98,10 +117,9 @@ body {
 main {
   max-width: 720px;
   margin: 0 auto;
-  padding: 2rem 1.25rem 3rem;
+  padding: 2rem 1.25rem 0;
   padding-left: max(1.25rem, env(safe-area-inset-left));
   padding-right: max(1.25rem, env(safe-area-inset-right));
-  padding-bottom: max(3rem, env(safe-area-inset-bottom));
 }
 
 h1 {
@@ -136,6 +154,10 @@ h1 {
 .page-back a {
   color: var(--text-muted);
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.25rem 0;
 }
 
 .page-back a:hover {
@@ -253,13 +275,6 @@ h1 {
 
 .station-list-link {
   text-decoration: none;
-}
-
-.station-list-link:hover,
-.station-list-link:focus-visible,
-.learn-more-toggle:hover,
-.learn-more-toggle:focus-visible {
-  outline: none;
 }
 
 .learn-more-toggle {
@@ -702,6 +717,20 @@ html[data-theme="light"] .map-loading-skeleton::before {
   letter-spacing: 0.1em;
   color: var(--text-muted);
   margin-bottom: 0.65rem;
+  font-weight: 600;
+}
+
+/* Visible keyboard focus for interactive controls */
+.station-list-link:focus-visible,
+.learn-more-toggle:focus-visible,
+.map-explore-btn:focus-visible,
+.timeline-range-btn:focus-visible,
+.theme-toggle:focus-visible,
+.built-by > .theme-toggle:focus-visible,
+.page-back a:focus-visible,
+.timeline-overlay:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
 .river-map {
@@ -756,11 +785,13 @@ html[data-theme="light"] .map-loading-skeleton::before {
   font-size: 0.7rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  padding: 0.45rem 0.75rem;
+  padding: 0.55rem 0.9rem;
+  min-height: 44px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 0.15rem;
   max-width: calc(100% - 1.5rem);
   text-align: center;
@@ -769,7 +800,6 @@ html[data-theme="light"] .map-loading-skeleton::before {
 .map-explore-btn:hover,
 .map-explore-btn:focus-visible {
   color: var(--text);
-  outline: none;
 }
 
 .river-map-container {
@@ -795,9 +825,11 @@ html[data-theme="light"] .map-loading-skeleton::before {
   background: var(--map-chrome);
 }
 
-/* Dark mode: crush Voyager into a near-black basemap, then lighten labels on top.
-   Scoped to the map viewport (not html) so mobile Safari can't keep a stale filtered composite. */
-.river-map-viewport[data-map-theme="dark"] .leaflet-layer.river-map-base-tiles img.leaflet-tile {
+/*
+  Dark mode: crush Voyager on the basemap layer container (not each tile img).
+  Tile layers remount on theme change; the Leaflet map itself stays mounted.
+*/
+.river-map-viewport[data-map-theme="dark"] .leaflet-layer.river-map-base-tiles {
   filter: brightness(0.34) contrast(1.75) saturate(0.22) grayscale(0.15);
 }
 
@@ -807,11 +839,6 @@ html[data-theme="light"] .map-loading-skeleton::before {
 
 .river-map-viewport[data-map-theme="dark"] .leaflet-layer.river-map-label-tiles img.leaflet-tile {
   filter: brightness(1.3) contrast(1.1);
-}
-
-.river-map-viewport[data-map-theme="light"] .leaflet-layer.river-map-base-tiles img.leaflet-tile {
-  filter: none;
-  -webkit-filter: none;
 }
 
 .leaflet-tooltip.map-label {
@@ -906,7 +933,7 @@ html[data-theme="light"] .map-loading-skeleton::before {
   border: 1px solid var(--border);
   border-radius: 50%;
   border-top: 1px solid var(--border);
-  background: #93c5fd;
+  background: var(--put-in);
 }
 
 .station-list {
@@ -1002,14 +1029,14 @@ html[data-theme="light"] .map-loading-skeleton::before {
   font-size: 0.72rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  padding: 0.35rem 0.6rem;
+  padding: 0.55rem 0.75rem;
+  min-height: 44px;
   cursor: pointer;
 }
 
 .timeline-range-btn:hover,
 .timeline-range-btn:focus-visible {
   color: var(--text);
-  outline: none;
 }
 
 .timeline-range-btn.is-active {
@@ -1208,7 +1235,6 @@ html[data-theme="light"] .map-loading-skeleton::before {
   color: var(--text);
   border-color: var(--hover-border);
   background: var(--hover-bg);
-  outline: none;
 }
 
 .theme-toggle-icon {
@@ -1256,8 +1282,12 @@ html[data-theme="light"] .map-loading-skeleton::before {
 }
 
 .built-by {
-  margin-top: 2rem;
+  max-width: 720px;
+  margin: 2rem auto 0;
   padding-top: 1rem;
+  padding-left: max(1.25rem, env(safe-area-inset-left));
+  padding-right: max(1.25rem, env(safe-area-inset-right));
+  padding-bottom: max(3rem, env(safe-area-inset-bottom));
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -1444,7 +1474,8 @@ html[data-theme="light"] .map-loading-skeleton::before {
 
   .timeline-range-btn {
     text-align: center;
-    padding: 0.5rem 0.35rem;
+    padding: 0.55rem 0.35rem;
+    min-height: 44px;
     font-size: 0.68rem;
   }
 

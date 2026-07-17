@@ -1,9 +1,13 @@
+"use client";
+
 import {
   E_COLI_THRESHOLD,
   STATION_CHART_COLORS,
+  STATION_CHART_COLORS_LIGHT,
   type HistoryPoint,
   type StationHistory,
 } from "@/lib/bacteria/usgs";
+import { useTheme } from "@/lib/use-theme";
 
 const WIDTH = 88;
 const HEIGHT = 32;
@@ -27,6 +31,8 @@ function buildSparklinePath(
 }
 
 export function HistorySparkline({ stations }: { stations: StationHistory[] }) {
+  const theme = useTheme();
+  const chartColors = theme === "light" ? STATION_CHART_COLORS_LIGHT : STATION_CHART_COLORS;
   const allPoints = stations.flatMap((station) => station.points);
   if (allPoints.length === 0) return null;
 
@@ -48,7 +54,7 @@ export function HistorySparkline({ stations }: { stations: StationHistory[] }) {
         <path
           key={station.id}
           d={buildSparklinePath(station.points, xScale, yScale)}
-          stroke={STATION_CHART_COLORS[index % STATION_CHART_COLORS.length]}
+          stroke={chartColors[index % chartColors.length]}
           className="history-sparkline-line"
           fill="none"
         />
