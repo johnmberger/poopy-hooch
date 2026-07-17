@@ -183,7 +183,7 @@ export function buildSummary(stations: StationReading[]): BacteriaReport["summar
   if (safeCount === totalCount) {
     return {
       headline: "Not poopy at all",
-      message: "You're good to go!",
+      message: "You're good to go — the Hooch is holding it in.",
       overallSafe: true,
       safeCount,
       totalCount,
@@ -193,7 +193,7 @@ export function buildSummary(stations: StationReading[]): BacteriaReport["summar
   if (safeCount === 0) {
     return {
       headline: "Poopy all over",
-      message: "Stay out of the water today.",
+      message: "Stay out of the water today, or go poop the Hooch — it's the right thing to do.",
       overallSafe: false,
       safeCount,
       totalCount,
@@ -205,7 +205,7 @@ export function buildSummary(stations: StationReading[]): BacteriaReport["summar
   const safeVerb = safe.length === 1 ? "is" : "are";
   return {
     headline: "Partly poopy",
-    message: `${safeNames} ${safeVerb} fine. Avoid ${unsafeNames}.`,
+    message: `Avoid ${unsafeNames}. ${safeNames} ${safeVerb} fine — but you could change that! 😀`,
     overallSafe: false,
     safeCount,
     totalCount,

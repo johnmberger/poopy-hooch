@@ -98,6 +98,9 @@ describe("buildSummary", () => {
 
     expect(summary.overallSafe).toBe(false);
     expect(summary.headline).toBe("Poopy all over");
+    expect(summary.message).toBe(
+      "Stay out of the water today, or go poop the Hooch — it's the right thing to do.",
+    );
   });
 
   it("returns a mixed verdict naming safe and unsafe stations", () => {
@@ -109,7 +112,9 @@ describe("buildSummary", () => {
 
     expect(summary.overallSafe).toBe(false);
     expect(summary.headline).toBe("Partly poopy");
-    expect(summary.message).toBe("Medlock Bridge & Paces Ferry are fine. Avoid Powers Ferry.");
+    expect(summary.message).toBe(
+      "Avoid Powers Ferry. Medlock Bridge & Paces Ferry are fine — but you could change that! 😀",
+    );
   });
 
   it("uses singular grammar when only one station is clean", () => {
@@ -119,7 +124,9 @@ describe("buildSummary", () => {
       station({ name: "Paces Ferry", risk: "low" }),
     ]);
 
-    expect(summary.message).toBe("Paces Ferry is fine. Avoid Medlock Bridge & Powers Ferry.");
+    expect(summary.message).toBe(
+      "Avoid Medlock Bridge & Powers Ferry. Paces Ferry is fine — but you could change that! 😀",
+    );
   });
 });
 

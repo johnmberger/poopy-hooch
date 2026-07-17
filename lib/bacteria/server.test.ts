@@ -31,7 +31,7 @@ describe("getServerBacteriaReport", () => {
       stations: [],
       summary: {
         headline: "Not poopy at all",
-        message: "You're good to go!",
+        message: "You're good to go — the Hooch is holding it in.",
         overallSafe: true,
         safeCount: 3,
         totalCount: 3,
