@@ -37,7 +37,7 @@ export const brands: Record<BrandId, Brand> = {
     siteUrl: "https://poopthehooch.com",
     siteDescription:
       "Is the Chattahoochee poopy? Check live E. coli bacteria levels before tubing or floating in Atlanta. USGS BacteriALERT readings at Medlock Bridge, Powers Ferry, and Paces Ferry.",
-    ogTitle: "Poop the Hooch",
+    ogTitle: "Poop the Hooch!",
     ogSubtitle: "Is the Chattahoochee poopy?",
   },
 };
