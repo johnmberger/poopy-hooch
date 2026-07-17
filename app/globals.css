@@ -1505,6 +1505,10 @@ html[data-theme="light"] .built-by-turd {
     flex-wrap: wrap;
   }
 
+  .built-by .theme-toggle {
+    display: none;
+  }
+
   .timeline-controls {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
