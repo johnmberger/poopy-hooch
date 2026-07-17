@@ -1,16 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  GeoJSON,
-  CircleMarker,
-  Tooltip,
-  Popup,
-  Rectangle,
-  useMap,
-} from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, CircleMarker, Tooltip, Popup, useMap } from "react-leaflet";
 import { latLngBounds } from "leaflet";
 import type { Feature, FeatureCollection, LineString } from "geojson";
 import type { TooltipOptions, LatLngBounds } from "leaflet";
@@ -30,6 +21,8 @@ import riverData from "@/data/chattahoochee-river.json";
 const river = riverData as FeatureCollection;
 
 const TILE_VOYAGER = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png";
+const TILE_VOYAGER_NOLABELS = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png";
+const TILE_DARK_LABELS = "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}.png";
 
 interface RiverMapClientProps {
   stations: StationReading[];
@@ -65,22 +58,18 @@ function labelTooltipProps(side: "left" | "right" | "top" | "bottom"): Pick<Tool
   return { direction: "left", offset: [-8, 0] };
 }
 
-function PutInPane() {
-  const map = useMap();
-
-  useEffect(() => {
-    if (map.getPane("putInPane")) return;
-    map.createPane("putInPane");
-    const pane = map.getPane("putInPane");
-    if (pane) pane.style.zIndex = "650";
-  }, [map]);
-
-  return null;
-}
-
 function PutInsLayer({ markerStroke, fillColor }: { markerStroke: string; fillColor: string }) {
   const map = useMap();
   const [zoom, setZoom] = useState(PUT_IN_DETAIL_ZOOM - 1);
+  const [paneReady, setPaneReady] = useState(() => Boolean(map.getPane("putInPane")));
+
+  useLayoutEffect(() => {
+    if (!map.getPane("putInPane")) {
+      const pane = map.createPane("putInPane");
+      pane.style.zIndex = "650";
+    }
+    setPaneReady(true);
+  }, [map]);
 
   useEffect(() => {
     const update = () => setZoom(map.getZoom());
@@ -90,6 +79,8 @@ function PutInsLayer({ markerStroke, fillColor }: { markerStroke: string; fillCo
       map.off("zoomend", update);
     };
   }, [map]);
+
+  if (!paneReady) return null;
 
   return (
     <>
@@ -152,39 +143,6 @@ function FitBounds({ bounds }: { bounds: LatLngBounds }) {
   return null;
 }
 
-/** Dims basemap tiles without CSS filters (those blank out Leaflet tiles on Safari). */
-function DarkScrim() {
-  const map = useMap();
-  const [paneReady, setPaneReady] = useState(() => Boolean(map.getPane("darkScrimPane")));
-
-  useLayoutEffect(() => {
-    if (!map.getPane("darkScrimPane")) {
-      const pane = map.createPane("darkScrimPane");
-      pane.style.zIndex = "350";
-      pane.style.pointerEvents = "none";
-    }
-    setPaneReady(true);
-  }, [map]);
-
-  if (!paneReady) return null;
-
-  return (
-    <Rectangle
-      bounds={[
-        [-85, -180],
-        [85, 180],
-      ]}
-      pathOptions={{
-        stroke: false,
-        fillColor: "#000",
-        fillOpacity: 0.58,
-        interactive: false,
-      }}
-      pane="darkScrimPane"
-    />
-  );
-}
-
 export default function RiverMapClient({ stations, interactive }: RiverMapClientProps) {
   const theme = useTheme();
   const isLight = theme === "light";
@@ -195,6 +153,30 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
   const putInFill = isLight ? "#1d4ed8" : "#93c5fd";
   const preferRetina =
     typeof window !== "undefined" && !window.matchMedia("(pointer: coarse)").matches;
+
+  // Two-phase remount: drop the old Leaflet DOM completely before building the next theme.
+  // Mobile Safari otherwise keeps the previous filtered tile composite.
+  const [mapEpoch, setMapEpoch] = useState(0);
+  const [mapMounted, setMapMounted] = useState(true);
+  const [tilesReady, setTilesReady] = useState(false);
+
+  useEffect(() => {
+    setTilesReady(false);
+    setMapMounted(false);
+
+    const remount = window.setTimeout(() => {
+      setMapEpoch((epoch) => epoch + 1);
+      setMapMounted(true);
+    }, 40);
+
+    const fallback = window.setTimeout(() => setTilesReady(true), 2000);
+
+    return () => {
+      window.clearTimeout(remount);
+      window.clearTimeout(fallback);
+    };
+  }, [theme]);
+
   const coloredSegments = useMemo(
     () =>
       river.features
@@ -252,98 +234,110 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
     | Feature<LineString>
     | undefined;
 
-  const [tilesReady, setTilesReady] = useState(false);
-
-  useEffect(() => {
-    setTilesReady(false);
-    const fallback = window.setTimeout(() => setTilesReady(true), 1500);
-    return () => window.clearTimeout(fallback);
-  }, [theme]);
-
   return (
     <div className={`river-map-viewport${tilesReady ? " is-ready" : ""}`} data-map-theme={theme}>
-      <MapContainer
-        key={theme}
-        center={[33.93, -84.32]}
-        zoom={11}
-        scrollWheelZoom={false}
-        fadeAnimation={false}
-        zoomAnimation={false}
-        markerZoomAnimation={false}
-        className="river-map-container"
-        attributionControl={false}
-      >
-        <MapInteraction interactive={interactive} />
-        <FitBounds bounds={bounds} />
-        <PutInPane />
+      {mapMounted ? (
+        <MapContainer
+          key={`${theme}-${mapEpoch}`}
+          center={[33.93, -84.32]}
+          zoom={11}
+          scrollWheelZoom={false}
+          fadeAnimation={false}
+          zoomAnimation={false}
+          markerZoomAnimation={false}
+          className="river-map-container"
+          attributionControl={false}
+        >
+          <MapInteraction interactive={interactive} />
+          <FitBounds bounds={bounds} />
 
-        <TileLayer
-          url={TILE_VOYAGER}
-          detectRetina={preferRetina}
-          eventHandlers={{
-            load: () => setTilesReady(true),
-          }}
-        />
-        {!isLight && <DarkScrim />}
+          {isLight ? (
+            <TileLayer
+              url={TILE_VOYAGER}
+              detectRetina={preferRetina}
+              eventHandlers={{
+                load: () => setTilesReady(true),
+              }}
+            />
+          ) : (
+            <>
+              <TileLayer
+                url={TILE_VOYAGER_NOLABELS}
+                className="river-map-base-tiles"
+                detectRetina={preferRetina}
+                eventHandlers={{
+                  load: () => setTilesReady(true),
+                }}
+              />
+              <TileLayer
+                url={TILE_DARK_LABELS}
+                className="river-map-label-tiles"
+                detectRetina={preferRetina}
+              />
+            </>
+          )}
 
-        {outline && (
-          <GeoJSON
-            data={outline}
-            pathOptions={{ color: outlineColor, weight: 12, opacity: 1, lineCap: "round", lineJoin: "round" }}
-          />
-        )}
+          {outline && (
+            <GeoJSON
+              data={outline}
+              pathOptions={{ color: outlineColor, weight: 12, opacity: 1, lineCap: "round", lineJoin: "round" }}
+            />
+          )}
 
-        {coloredSegments.map((segment) => (
-          <GeoJSON
-            key={segment.key}
-            data={
-              {
-                type: "Feature",
-                properties: {},
-                geometry: {
-                  type: "LineString",
-                  coordinates: segment.coordinates,
-                },
-              } as Feature<LineString>
-            }
-            pathOptions={{
-              color: segment.color,
-              weight: 7,
-              opacity: 0.95,
-              lineCap: "round",
-              lineJoin: "round",
-            }}
-          />
-        ))}
+          {coloredSegments.map((segment) => (
+            <GeoJSON
+              key={segment.key}
+              data={
+                {
+                  type: "Feature",
+                  properties: {},
+                  geometry: {
+                    type: "LineString",
+                    coordinates: segment.coordinates,
+                  },
+                } as Feature<LineString>
+              }
+              pathOptions={{
+                color: segment.color,
+                weight: 7,
+                opacity: 0.95,
+                lineCap: "round",
+                lineJoin: "round",
+              }}
+            />
+          ))}
 
-        {stations.map((station) => (
-          <CircleMarker
-            key={station.id}
-            center={[station.lat, station.lng]}
-            radius={8}
-            pathOptions={{
-              color: stationStroke,
-              weight: 2,
-              fillColor: station.risk === "low" ? riverColors.clean : riverColors.poopy,
-              fillOpacity: 1,
-            }}
-          >
-            <Tooltip
-              permanent
-              {...labelTooltipProps(station.labelDirection)}
-              className="map-label map-label-station"
+          {stations.map((station) => (
+            <CircleMarker
+              key={station.id}
+              center={[station.lat, station.lng]}
+              radius={8}
+              pathOptions={{
+                color: stationStroke,
+                weight: 2,
+                fillColor: station.risk === "low" ? riverColors.clean : riverColors.poopy,
+                fillOpacity: 1,
+              }}
             >
-              {station.name}
-            </Tooltip>
-            <Popup className="map-popup">
-              {station.risk === "low" ? "clean" : "poopy"} · {Math.round(station.eColi)}
-            </Popup>
-          </CircleMarker>
-        ))}
+              <Tooltip
+                permanent
+                {...labelTooltipProps(station.labelDirection)}
+                className="map-label map-label-station"
+              >
+                {station.name}
+              </Tooltip>
+              <Popup className="map-popup">
+                {station.risk === "low" ? "clean" : "poopy"} · {Math.round(station.eColi)}
+              </Popup>
+            </CircleMarker>
+          ))}
 
-        <PutInsLayer markerStroke={putInStroke} fillColor={putInFill} />
-      </MapContainer>
-      {!tilesReady && <MapLoadingSkeleton overlay />}
+          <PutInsLayer markerStroke={putInStroke} fillColor={putInFill} />
+        </MapContainer>
+      ) : (
+        <MapLoadingSkeleton overlay />
+      )}
+      {mapMounted && !tilesReady && <MapLoadingSkeleton overlay />}
     </div>
   );
 }

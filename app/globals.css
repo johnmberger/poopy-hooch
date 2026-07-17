@@ -825,6 +825,25 @@ html[data-theme="light"] .map-loading-skeleton::before {
   background: var(--map-chrome);
 }
 
+/*
+  Dark mode: crush Voyager on the basemap layer.
+  Theme toggles fully tear down/rebuild the Leaflet map so Mobile Safari
+  does not keep a stale filtered tile composite.
+*/
+.river-map-viewport[data-map-theme="dark"] .leaflet-layer.river-map-base-tiles {
+  filter: brightness(0.34) contrast(1.75) saturate(0.22) grayscale(0.15);
+  -webkit-filter: brightness(0.34) contrast(1.75) saturate(0.22) grayscale(0.15);
+}
+
+.river-map-viewport[data-map-theme="dark"] .leaflet-layer.river-map-label-tiles {
+  mix-blend-mode: lighten;
+}
+
+.river-map-viewport[data-map-theme="dark"] .leaflet-layer.river-map-label-tiles img.leaflet-tile {
+  filter: brightness(1.25) contrast(1.08);
+  -webkit-filter: brightness(1.25) contrast(1.08);
+}
+
 .leaflet-tooltip.map-label {
   background: var(--map-label-bg);
   color: var(--map-label-fg);
