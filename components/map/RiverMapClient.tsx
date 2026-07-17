@@ -1,7 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { MapContainer, TileLayer, GeoJSON, CircleMarker, Tooltip, Popup, useMap } from "react-leaflet";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  GeoJSON,
+  CircleMarker,
+  Tooltip,
+  Popup,
+  Rectangle,
+  useMap,
+} from "react-leaflet";
 import { latLngBounds } from "leaflet";
 import type { Feature, FeatureCollection, LineString } from "geojson";
 import type { TooltipOptions, LatLngBounds } from "leaflet";
@@ -21,8 +30,6 @@ import riverData from "@/data/chattahoochee-river.json";
 const river = riverData as FeatureCollection;
 
 const TILE_VOYAGER = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png";
-const TILE_VOYAGER_NOLABELS = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png";
-const TILE_DARK_LABELS = "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}.png";
 
 interface RiverMapClientProps {
   stations: StationReading[];
@@ -145,18 +152,37 @@ function FitBounds({ bounds }: { bounds: LatLngBounds }) {
   return null;
 }
 
-/** Cheap relayout after tile swap — avoids tearing down the whole Leaflet map. */
-function RelayoutOnTheme({ theme }: { theme: string }) {
+/** Dims basemap tiles without CSS filters (those blank out Leaflet tiles on Safari). */
+function DarkScrim() {
   const map = useMap();
+  const [paneReady, setPaneReady] = useState(() => Boolean(map.getPane("darkScrimPane")));
 
-  useEffect(() => {
-    const id = window.requestAnimationFrame(() => {
-      map.invalidateSize({ animate: false });
-    });
-    return () => window.cancelAnimationFrame(id);
-  }, [map, theme]);
+  useLayoutEffect(() => {
+    if (!map.getPane("darkScrimPane")) {
+      const pane = map.createPane("darkScrimPane");
+      pane.style.zIndex = "350";
+      pane.style.pointerEvents = "none";
+    }
+    setPaneReady(true);
+  }, [map]);
 
-  return null;
+  if (!paneReady) return null;
+
+  return (
+    <Rectangle
+      bounds={[
+        [-85, -180],
+        [85, 180],
+      ]}
+      pathOptions={{
+        stroke: false,
+        fillColor: "#000",
+        fillOpacity: 0.58,
+        interactive: false,
+      }}
+      pane="darkScrimPane"
+    />
+  );
 }
 
 export default function RiverMapClient({ stations, interactive }: RiverMapClientProps) {
@@ -229,60 +255,39 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
   const [tilesReady, setTilesReady] = useState(false);
 
   useEffect(() => {
-    // Tile layers remount on theme change; keep the skeleton from sticking if load is cached.
     setTilesReady(false);
-    const fallback = window.setTimeout(() => setTilesReady(true), 1200);
+    const fallback = window.setTimeout(() => setTilesReady(true), 1500);
     return () => window.clearTimeout(fallback);
   }, [theme]);
 
   return (
     <div className={`river-map-viewport${tilesReady ? " is-ready" : ""}`} data-map-theme={theme}>
       <MapContainer
+        key={theme}
         center={[33.93, -84.32]}
         zoom={11}
         scrollWheelZoom={false}
         fadeAnimation={false}
         zoomAnimation={false}
+        markerZoomAnimation={false}
         className="river-map-container"
         attributionControl={false}
       >
         <MapInteraction interactive={interactive} />
         <FitBounds bounds={bounds} />
-        <RelayoutOnTheme theme={theme} />
         <PutInPane />
 
-        {isLight ? (
-          <TileLayer
-            key="tiles-light"
-            url={TILE_VOYAGER}
-            detectRetina={preferRetina}
-            eventHandlers={{
-              load: () => setTilesReady(true),
-            }}
-          />
-        ) : (
-          <>
-            <TileLayer
-              key="tiles-dark-base"
-              url={TILE_VOYAGER_NOLABELS}
-              className="river-map-base-tiles"
-              detectRetina={preferRetina}
-              eventHandlers={{
-                load: () => setTilesReady(true),
-              }}
-            />
-            <TileLayer
-              key="tiles-dark-labels"
-              url={TILE_DARK_LABELS}
-              className="river-map-label-tiles"
-              detectRetina={preferRetina}
-            />
-          </>
-        )}
+        <TileLayer
+          url={TILE_VOYAGER}
+          detectRetina={preferRetina}
+          eventHandlers={{
+            load: () => setTilesReady(true),
+          }}
+        />
+        {!isLight && <DarkScrim />}
 
         {outline && (
           <GeoJSON
-            key={`outline-${theme}`}
             data={outline}
             pathOptions={{ color: outlineColor, weight: 12, opacity: 1, lineCap: "round", lineJoin: "round" }}
           />
@@ -313,7 +318,7 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
 
         {stations.map((station) => (
           <CircleMarker
-            key={`${station.id}-${theme}`}
+            key={station.id}
             center={[station.lat, station.lng]}
             radius={8}
             pathOptions={{
@@ -336,7 +341,7 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
           </CircleMarker>
         ))}
 
-        <PutInsLayer key={theme} markerStroke={putInStroke} fillColor={putInFill} />
+        <PutInsLayer markerStroke={putInStroke} fillColor={putInFill} />
       </MapContainer>
       {!tilesReady && <MapLoadingSkeleton overlay />}
     </div>

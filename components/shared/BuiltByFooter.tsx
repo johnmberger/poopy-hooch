@@ -18,6 +18,22 @@ function LinkedInIcon() {
   );
 }
 
+function RiverTurd({ className }: { className?: string }) {
+  return (
+    <svg
+      className={`built-by-floater built-by-turd${className ? ` ${className}` : ""}`}
+      viewBox="0 0 16 16"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <ellipse cx="8" cy="12.2" rx="5.2" ry="2.6" fill="currentColor" />
+      <ellipse cx="8" cy="9.4" rx="4" ry="2.3" fill="currentColor" />
+      <ellipse cx="8" cy="6.8" rx="2.8" ry="2" fill="currentColor" />
+      <ellipse cx="8" cy="4.8" rx="1.7" ry="1.5" fill="currentColor" />
+    </svg>
+  );
+}
+
 function trackOutbound(destination: "github" | "linkedin") {
   void import("@vercel/analytics").then(({ track }) => {
     track("outbound_profile_click", { destination });
@@ -27,30 +43,59 @@ function trackOutbound(destination: "github" | "linkedin") {
 export function BuiltByFooter() {
   return (
     <footer className="built-by">
-      <div className="built-by-credit">
-        <span>Made by John Berger</span>
-        <div className="built-by-links">
-          <a
-            href="https://github.com/johnmberger"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="John Berger on GitHub (opens in a new tab)"
-            onClick={() => trackOutbound("github")}
-          >
-            <GitHubIcon />
-          </a>
-          <a
-            href="https://www.linkedin.com/in/johnmberger/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="John Berger on LinkedIn (opens in a new tab)"
-            onClick={() => trackOutbound("linkedin")}
-          >
-            <LinkedInIcon />
-          </a>
-        </div>
+      <div className="built-by-river-wrap">
+        <svg
+          className="built-by-river"
+          viewBox="0 0 720 24"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            className="built-by-river-bank"
+            d="M0 12 Q36 3 72 12 T144 12 T216 12 T288 12 T360 12 T432 12 T504 12 T576 12 T648 12 T720 12"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            className="built-by-river-flow"
+            d="M0 12 Q36 3 72 12 T144 12 T216 12 T288 12 T360 12 T432 12 T504 12 T576 12 T648 12 T720 12"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <RiverTurd className="built-by-turd-a" />
+        <RiverTurd className="built-by-turd-b" />
+        <RiverTurd className="built-by-turd-c" />
       </div>
-      <ThemeToggle />
+      <div className="built-by-row">
+        <div className="built-by-credit">
+          <span>Made by John Berger</span>
+          <div className="built-by-links">
+            <a
+              href="https://github.com/johnmberger"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="John Berger on GitHub (opens in a new tab)"
+              onClick={() => trackOutbound("github")}
+            >
+              <GitHubIcon />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/johnmberger/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="John Berger on LinkedIn (opens in a new tab)"
+              onClick={() => trackOutbound("linkedin")}
+            >
+              <LinkedInIcon />
+            </a>
+          </div>
+        </div>
+        <ThemeToggle />
+      </div>
     </footer>
   );
 }

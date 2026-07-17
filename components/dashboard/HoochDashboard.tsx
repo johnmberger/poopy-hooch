@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -12,11 +11,6 @@ import { RiverMap } from "@/components/map/RiverMap";
 import { getBacteriaReport } from "@/lib/bacteria/cache";
 import { E_COLI_THRESHOLD, type BacteriaHistoryReport, type BacteriaReport } from "@/lib/bacteria/usgs";
 import { HoochSkeleton } from "./HoochSkeleton";
-
-const FlyingPoop = dynamic(
-  () => import("@/components/shared/FlyingPoop").then((mod) => ({ default: mod.FlyingPoop })),
-  { ssr: false },
-);
 
 function formatObservedAt(iso: string): string {
   return new Intl.DateTimeFormat("en-US", {
@@ -43,13 +37,6 @@ export function HoochDashboard({
 }) {
   const [report, setReport] = useState<BacteriaReport | null>(initialReport);
   const [error, setError] = useState<string | null>(null);
-  const [forcePoop, setForcePoop] = useState(false);
-
-  useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
-      setForcePoop(new URLSearchParams(window.location.search).get("poop") === "1");
-    }
-  }, []);
 
   useEffect(() => {
     if (initialReport) return;
@@ -151,8 +138,6 @@ export function HoochDashboard({
           <LearnMore />
         </li>
       </ul>
-
-      {(!report.summary.overallSafe || forcePoop) && <FlyingPoop active />}
     </>
   );
 }
