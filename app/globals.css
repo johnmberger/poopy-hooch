@@ -10,8 +10,6 @@
   --tooltip-bg: rgba(0, 0, 0, 0.94);
   --chart-grid: rgba(255, 255, 255, 0.08);
   --chart-crosshair: rgba(255, 255, 255, 0.35);
-  --inverted-muted: rgba(0, 0, 0, 0.55);
-  --unsafe-glow: 0 4px 24px rgba(255, 255, 255, 0.06);
   --map-chrome: #000;
   --map-overlay: rgba(0, 0, 0, 0.82);
   --map-label-bg: #000;
@@ -40,8 +38,6 @@ html[data-theme="light"] {
   --tooltip-bg: rgba(255, 255, 255, 0.96);
   --chart-grid: rgba(17, 24, 39, 0.1);
   --chart-crosshair: rgba(17, 24, 39, 0.3);
-  --inverted-muted: rgba(255, 255, 255, 0.55);
-  --unsafe-glow: 0 4px 24px rgba(0, 0, 0, 0.1);
   --map-chrome: #e8eaed;
   --map-overlay: rgba(255, 255, 255, 0.92);
   --map-label-bg: #fff;
@@ -639,22 +635,23 @@ html[data-theme="light"] .map-loading-skeleton::before {
 }
 
 .verdict.safe {
-  background: var(--bg);
+  background: var(--clean-bg);
   color: var(--text);
-  border-color: rgba(74, 222, 128, 0.3);
+  border-color: color-mix(in srgb, var(--clean) 45%, transparent);
 }
 
 .verdict.unsafe {
-  background: var(--text);
-  color: var(--bg);
-  box-shadow: var(--unsafe-glow);
+  background: var(--poopy-bg);
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--poopy) 45%, transparent);
+  box-shadow: none;
 }
 
 .verdict.mixed {
   background: var(--mixed-bg);
   color: var(--text);
-  border-color: rgba(251, 191, 36, 0.45);
-  box-shadow: 0 0 20px rgba(251, 191, 36, 0.07);
+  border-color: color-mix(in srgb, var(--mixed) 45%, transparent);
+  box-shadow: none;
 }
 
 .verdict h2 {
@@ -667,6 +664,10 @@ html[data-theme="light"] .map-loading-skeleton::before {
 
 .verdict.safe h2 {
   color: var(--clean);
+}
+
+.verdict.unsafe h2 {
+  color: var(--poopy);
 }
 
 .verdict.mixed h2 {
@@ -689,10 +690,6 @@ html[data-theme="light"] .map-loading-skeleton::before {
   font-style: italic;
   line-height: 1.45;
   color: var(--text-muted);
-}
-
-.verdict.unsafe .verdict-updated {
-  color: var(--inverted-muted);
 }
 
 .section-note {
