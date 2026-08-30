@@ -16,11 +16,10 @@ import {
   type StationReading,
 } from "@/lib/bacteria/usgs";
 import { useTheme } from "@/lib/use-theme";
+import { voyagerTileUrl } from "@/lib/map/tiles";
 import riverData from "@/data/chattahoochee-river.json";
 
 const river = riverData as FeatureCollection;
-
-const TILE_VOYAGER = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png";
 
 interface RiverMapClientProps {
   stations: StationReading[];
@@ -149,6 +148,7 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
   const stationStroke = isLight ? "#111827" : "#000";
   const putInStroke = isLight ? "#111827" : "#fff";
   const putInFill = isLight ? "#1d4ed8" : "#93c5fd";
+  const tileUrl = voyagerTileUrl();
   // Match display DPR so Lighthouse doesn't flag undersized tiles on retina.
   const detectRetina =
     typeof window !== "undefined" && window.devicePixelRatio > 1;
@@ -251,7 +251,7 @@ export default function RiverMapClient({ stations, interactive }: RiverMapClient
           <FitBounds bounds={bounds} />
 
           <TileLayer
-            url={TILE_VOYAGER}
+            url={tileUrl}
             className="river-map-base-tiles"
             detectRetina={detectRetina}
             keepBuffer={1}

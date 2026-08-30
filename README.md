@@ -25,10 +25,19 @@ Readings ≤ **235 cfu/100 mL** are considered low risk per EPA beach action val
 git clone https://github.com/johnmberger/poopy-hooch.git
 cd poopy-hooch
 npm install
+cp .env.example .env.local   # optional — see below
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+### Environment variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `NEXT_PUBLIC_CARTO_API_KEY` | Production | Free [CARTO basemap API key](https://carto.com/basemaps/apikey) for Voyager map tiles. Without it, local dev falls back to OpenStreetMap tiles. |
+
+Add to `.env.local` for local Voyager tiles, and set the same variable in Vercel (or your host) for production.
 
 ### Scripts
 
